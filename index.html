@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Community Business Nomination - NewsBreak</title>
+<style>
+  :root {
+    --red: #E4002B;
+    --red-light: #FFF0F3;
+    --dark: #1A1A1A;
+    --gray: #666;
+    --gray-light: #F5F5F5;
+    --border: #E8E8E8;
+    --white: #FFFFFF;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--gray-light);
+    color: var(--dark);
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ── Status Bar ── */
+  .status-bar {
+    background: var(--white);
+    padding: 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  /* ── Top Nav ── */
+  .top-nav {
+    background: var(--white);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .top-nav .logo { font-size: 20px; font-weight: 800; color: var(--red); letter-spacing: -0.5px; }
+  .top-nav .tabs { display: flex; gap: 16px; font-size: 14px; color: var(--gray); }
+  .top-nav .tabs span {
+    cursor: pointer;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .top-nav .tabs span.active { color: var(--dark); font-weight: 700; border-bottom-color: var(--red); }
+  .top-nav .tabs span:hover:not(.active) { color: var(--dark); }
+  .top-nav .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px;
+  }
+
+  /* ── Feed Container ── */
+  .feed-container { position: relative; overflow: hidden; }
+  .feed-slider {
+    display: flex;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 200%;
+  }
+  .feed-slider.at-local { transform: translateX(-50%); }
+  .feed {
+    width: 50%;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 80px;
+    flex-shrink: 0;
+  }
+
+  /* ── Nomination CTA Card ── */
+  .cta-card {
+    background: linear-gradient(135deg, #E4002B 0%, #FF4D6A 100%);
+    border-radius: var(--radius); padding: 24px 20px; color: var(--white);
+    cursor: pointer; transition: transform 0.2s; position: relative; overflow: hidden;
+  }
+  .cta-card:active { transform: scale(0.98); }
+  .cta-card::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;
+  }
+  .cta-card .cta-badge {
+    display: inline-block; background: rgba(255,255,255,0.2);
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    margin-bottom: 12px; backdrop-filter: blur(4px);
+  }
+  .cta-card h2 { font-size: 18px; line-height: 1.4; margin-bottom: 8px; }
+  .cta-card p { font-size: 13px; opacity: 0.9; line-height: 1.5; margin-bottom: 16px; }
+  .cta-card .cta-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--white); color: var(--red); border: none;
+    padding: 10px 20px; border-radius: 24px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .cta-card .social-proof { margin-top: 12px; font-size: 11px; opacity: 0.8; }
+
+  /* ── Inline CTA (compact, for For You feed) ── */
+  .cta-inline {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border-left: 4px solid var(--red);
+  }
+  .cta-inline:active { transform: scale(0.98); }
+  .cta-inline .cta-inline-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--red-light); color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .cta-inline .cta-inline-body { flex: 1; }
+  .cta-inline .cta-inline-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .cta-inline .cta-inline-sub { font-size: 12px; color: var(--gray); }
+  .cta-inline .cta-inline-arrow { color: var(--red); font-size: 18px; font-weight: 700; }
+
+  /* ── Community Favorite Card ── */
+  .favorite-card {
+    background: var(--white); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  .favorite-card .card-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px 0; }
+  .card-header .source-icon {
+    width: 32px; height: 32px; background: var(--red-light); color: var(--red);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;
+  }
+  .card-header .source-info { flex: 1; }
+  .card-header .source-name { font-size: 13px; font-weight: 700; }
+  .card-header .source-meta { font-size: 11px; color: var(--gray); }
+  .favorite-card .card-body { padding: 12px 16px; }
+  .favorite-card .biz-name {
+    font-size: 17px; font-weight: 800; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .badge-icon {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #FFF8E1; color: #F59E0B; font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px;
+  }
+  .favorite-card .biz-category { font-size: 12px; color: var(--gray); margin-bottom: 10px; }
+  .favorite-card .biz-quote {
+    font-size: 14px; line-height: 1.6; color: #333;
+    padding: 10px 14px; background: var(--gray-light); border-radius: 8px;
+    border-left: 3px solid var(--red); margin-bottom: 10px;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden; cursor: pointer; position: relative;
+  }
+  .favorite-card .biz-quote.expanded {
+    display: block; -webkit-line-clamp: unset;
+  }
+  .favorite-card .biz-quote-toggle {
+    font-size: 12px; color: var(--red); font-weight: 600; cursor: pointer;
+    margin-top: -6px; margin-bottom: 10px; padding-left: 14px;
+  }
+  .favorite-card .biz-location {
+    font-size: 12px; color: var(--gray); display: flex; align-items: center; gap: 4px;
+  }
+  .favorite-card .card-stats {
+    display: flex; gap: 20px; padding: 10px 16px; font-size: 12px;
+    color: var(--gray); border-top: 1px solid var(--border);
+  }
+  .card-stats span { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .card-stats span:hover { color: var(--red); }
+  .nominate-count {
+    font-size: 12px; color: var(--red); font-weight: 600;
+    display: flex; align-items: center; gap: 4px; margin-bottom: 8px;
+  }
+
+  /* ── News Card (For You feed filler) ── */
+  .news-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .news-card .news-body { display: flex; gap: 12px; padding: 14px 16px; }
+  .news-card .news-text { flex: 1; }
+  .news-card .news-title { font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .news-card .news-meta { font-size: 11px; color: var(--gray); display: flex; align-items: center; gap: 6px; }
+  .news-card .news-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--gray); }
+  .news-card .news-thumb {
+    width: 100px; height: 74px; border-radius: 8px;
+    background: var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: #ccc;
+  }
+  .news-card .news-stats {
+    display: flex; gap: 16px; padding: 8px 16px 12px; font-size: 11px; color: var(--gray);
+  }
+
+  /* ── News Card with image banner ── */
+  .news-card .news-banner {
+    width: 100%; height: 180px; background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px; color: #ccc;
+  }
+  .news-card .news-banner-body { padding: 14px 16px; }
+  .news-card .news-banner-body .news-title { margin-bottom: 6px; }
+
+  /* ── Trending Bar ── */
+  .trending-bar {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px;
+  }
+  .trending-bar .trending-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--red); font-weight: 700; margin-bottom: 10px;
+  }
+  .trending-bar .trending-item {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 6px 0; font-size: 13px; cursor: pointer;
+  }
+  .trending-bar .trending-item:hover .trending-text { color: var(--red); }
+  .trending-bar .trending-num { font-weight: 800; color: var(--gray); min-width: 18px; }
+  .trending-bar .trending-text { font-weight: 600; transition: color 0.15s; }
+  .trending-bar .trending-tag { font-size: 11px; color: var(--gray); font-weight: 400; margin-left: 4px; }
+
+  /* ── Rankings Card ── */
+  .rankings-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .rankings-card .rankings-header {
+    padding: 16px; font-size: 16px; font-weight: 800;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .rankings-header .see-all { font-size: 13px; color: var(--red); font-weight: 600; cursor: pointer; }
+  .rankings-card .rank-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    border-top: 1px solid var(--border); cursor: pointer; transition: background 0.15s;
+  }
+  .rank-item:hover { background: var(--gray-light); }
+  .rank-item .rank-num { font-size: 18px; font-weight: 800; width: 28px; text-align: center; color: var(--dark); }
+  .rank-item:nth-child(2) .rank-num { color: #F59E0B; }
+  .rank-item:nth-child(3) .rank-num { color: #9CA3AF; }
+  .rank-item:nth-child(4) .rank-num { color: #CD7F32; }
+  .rank-item .rank-info { flex: 1; }
+  .rank-item .rank-name { font-size: 14px; font-weight: 600; }
+  .rank-item .rank-meta { font-size: 11px; color: var(--gray); margin-top: 2px; }
+  .rank-item .rank-votes {
+    font-size: 12px; color: var(--red); font-weight: 700;
+    background: var(--red-light); padding: 4px 10px; border-radius: 20px;
+  }
+
+  /* ── Section Divider ── */
+  .section-divider {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--gray); font-weight: 600; padding: 4px 4px 0;
+  }
+
+  /* ── Compact Favorite (For You variant) ── */
+  .favorite-compact {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .favorite-compact .compact-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--red-light); color: var(--red);
+    font-size: 11px; font-weight: 700; padding: 6px 16px;
+  }
+  .favorite-compact .compact-body { padding: 12px 16px; }
+  .favorite-compact .compact-title {
+    font-size: 16px; font-weight: 800; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .favorite-compact .compact-sub { font-size: 12px; color: var(--gray); margin-bottom: 8px; }
+  .favorite-compact .compact-quote {
+    font-size: 13px; line-height: 1.5; color: #444; font-style: italic;
+    margin-bottom: 8px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .favorite-compact .compact-footer {
+    display: flex; align-items: center; gap: 16px;
+    font-size: 12px; color: var(--gray);
+    padding: 8px 16px 12px;
+    border-top: 1px solid var(--border);
+  }
+  .compact-footer span { cursor: pointer; display: flex; align-items: center; gap: 3px; }
+  .compact-footer span:hover { color: var(--red); }
+  .compact-footer .sponsored-label {
+    margin-left: auto; font-size: 10px; color: #aaa; cursor: default;
+  }
+  .compact-footer .sponsored-label:hover { color: #aaa; }
+
+  /* ── Modal Overlay ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 200; display: none; align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-sheet {
+    background: var(--white); width: 100%; max-width: 430px;
+    border-radius: 20px 20px 0 0; max-height: 92vh; overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 10px auto 0; }
+  .modal-header {
+    padding: 16px 20px; display: flex; align-items: center;
+    justify-content: space-between; border-bottom: 1px solid var(--border);
+  }
+  .modal-header h3 { font-size: 17px; font-weight: 700; }
+  .modal-close {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--gray-light);
+    border: none; font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; color: var(--gray);
+  }
+
+  /* ── Form ── */
+  .nom-form { padding: 20px; }
+  .form-group { margin-bottom: 18px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--dark); }
+  .form-group label .required { color: var(--red); }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+    font-size: 15px; font-family: inherit; transition: border 0.2s;
+    background: var(--white); -webkit-appearance: none;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--red); }
+  .form-group textarea { resize: none; height: 100px; line-height: 1.5; }
+  .form-group .hint { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .form-group .location-auto {
+    display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray);
+    padding: 10px 14px; background: var(--gray-light); border-radius: 10px;
+  }
+  .location-auto .loc-dot { width: 8px; height: 8px; border-radius: 50%; background: #34D399; }
+  .submit-btn {
+    width: 100%; padding: 14px; background: var(--red); color: var(--white);
+    border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s; margin-top: 8px;
+  }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .submit-btn:not(:disabled):active { opacity: 0.8; }
+
+  /* ── Success Screen ── */
+  .success-screen { display: none; text-align: center; padding: 40px 20px; }
+  .success-screen.active { display: block; }
+  .success-icon {
+    width: 72px; height: 72px; background: #ECFDF5; color: #10B981; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 20px;
+  }
+  .success-screen h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .success-screen p { font-size: 14px; color: var(--gray); line-height: 1.5; margin-bottom: 24px; }
+  .success-preview {
+    background: var(--gray-light); border-radius: var(--radius); padding: 16px; text-align: left; margin-bottom: 20px;
+  }
+  .success-preview .preview-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); margin-bottom: 8px; }
+  .success-preview .preview-biz { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .success-preview .preview-quote { font-size: 13px; color: #555; font-style: italic; line-height: 1.5; }
+  .share-btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 12px 28px;
+    background: var(--dark); color: var(--white); border: none; border-radius: 24px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .done-btn {
+    display: block; margin: 12px auto 0; padding: 10px 28px;
+    background: none; border: none; color: var(--gray); font-size: 14px; cursor: pointer;
+  }
+
+  /* ── Bottom Nav ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 430px; background: var(--white);
+    border-top: 1px solid var(--border); display: flex; justify-content: space-around;
+    padding: 8px 0 20px; z-index: 90;
+  }
+  .bottom-nav .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-size: 10px; color: var(--gray); cursor: pointer; border: none; background: none; padding: 4px 12px;
+  }
+  .nav-item.active { color: var(--red); }
+  .nav-item .nav-icon { font-size: 20px; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
+    background: var(--dark); color: var(--white); padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 500; z-index: 999; opacity: 0;
+    transition: opacity 0.3s; pointer-events: none; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ── Tab indicator animation ── */
+  .tab-indicator {
+    position: absolute; bottom: 0; height: 2px; background: var(--red);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s;
+  }
+</style>
+</head>
+<body>
+
+<!-- Status Bar -->
+<div class="status-bar">
+  <span>9:41</span>
+  <span>●●●● WiFi 🔋</span>
+</div>
+
+<!-- Top Nav -->
+<div class="top-nav">
+  <div class="logo">NewsBreak</div>
+  <div class="tabs">
+    <span onclick="switchTab('foryou')" id="tab-foryou">For You</span>
+    <span onclick="switchTab('local')" id="tab-local" class="active">Local</span>
+    <span>Following</span>
+  </div>
+  <div class="avatar">👤</div>
+</div>
+
+<!-- Feed Container -->
+<div class="feed-container">
+  <div class="feed-slider at-local" id="feedSlider">
+
+    <!-- ════════════════════════════════════ -->
+    <!-- FOR YOU FEED                         -->
+    <!-- ════════════════════════════════════ -->
+    <div class="feed" id="feed-foryou">
+
+      <!-- News 1: banner style -->
+      <div class="news-card">
+        <div class="news-banner">🏙️</div>
+        <div class="news-banner-body">
+          <div class="news-title">City Council Approves $2.3M Grant for Downtown Small Business Recovery Program</div>
+          <div class="news-meta">
+            <span>Tucson Daily Star</span>
+            <span class="dot"></span>
+            <span>3h ago</span>
+            <span class="dot"></span>
+            <span>1.2k reads</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trending -->
+      <div class="trending-bar">
+        <div class="trending-label">🔥 Trending in Arizona</div>
+        <div class="trending-item">
+          <span class="trending-num">1</span>
+          <span class="trending-text">Summer heat wave forecast</span>
+          <span class="trending-tag">· Weather</span>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">2</span>
+          <span class="trending-text">Local businesses nominated by community</span>
+          <span class="trending-tag">· Community</span>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">3</span>
+          <span class="trending-text">I-10 construction update</span>
+          <span class="trending-tag">· Traffic</span>
+        </div>
+      </div>
+
+      <!-- News 2 -->
+      <div class="news-card">
+        <div class="news-body">
+          <div class="news-text">
+            <div class="news-title">Tucson Named One of the Best Cities for Food Lovers in 2026</div>
+            <div class="news-meta">
+              <span>Arizona Republic</span>
+              <span class="dot"></span>
+              <span>5h ago</span>
+            </div>
+          </div>
+          <div class="news-thumb">🍜</div>
+        </div>
+        <div class="news-stats">
+          <span>❤️ 342</span>
+          <span>💬 56</span>
+          <span>↗️ 89</span>
+        </div>
+      </div>
+
+      <!-- ★ Compact Nomination Card (organic insert in For You) -->
+      <div class="favorite-compact">
+        <div class="compact-tag">⭐ Community Favorite · Tucson</div>
+        <div class="compact-body">
+          <div class="compact-title">
+            Tumerico
+            <span class="badge-icon">🏆 Top Pick</span>
+          </div>
+          <div class="compact-sub">🍽️ Restaurant · Plant-Based · 23 nominations</div>
+          <div class="compact-quote">"A must-try for anyone looking for healthy, flavorful plant-based Mexican food. A hidden gem that brings the community together."</div>
+        </div>
+        <div class="compact-footer">
+          <span>❤️ 186</span>
+          <span>💬 42</span>
+          <span>↗️ Share</span>
+          <span class="sponsored-label">Based on your location</span>
+        </div>
+      </div>
+
+      <!-- News 3 -->
+      <div class="news-card">
+        <div class="news-body">
+          <div class="news-text">
+            <div class="news-title">New Bike Lane Network Connects University District to Downtown Corridor</div>
+            <div class="news-meta">
+              <span>KVOA News</span>
+              <span class="dot"></span>
+              <span>6h ago</span>
+            </div>
+          </div>
+          <div class="news-thumb">🚲</div>
+        </div>
+        <div class="news-stats">
+          <span>❤️ 128</span>
+          <span>💬 34</span>
+          <span>↗️ 21</span>
+        </div>
+      </div>
+
+      <!-- ★ Inline CTA (small, native-feeling) -->
+      <div class="cta-inline" onclick="openForm()">
+        <div class="cta-inline-icon">📝</div>
+        <div class="cta-inline-body">
+          <div class="cta-inline-title">Know a great local business?</div>
+          <div class="cta-inline-sub">Nominate them for the Community Spotlight</div>
+        </div>
+        <div class="cta-inline-arrow">›</div>
+      </div>
+
+      <!-- News 4 -->
+      <div class="news-card">
+        <div class="news-body">
+          <div class="news-text">
+            <div class="news-title">Pima County Library System Launches Free Small Business Workshop Series</div>
+            <div class="news-meta">
+              <span>Tucson Weekly</span>
+              <span class="dot"></span>
+              <span>8h ago</span>
+            </div>
+          </div>
+          <div class="news-thumb">📚</div>
+        </div>
+        <div class="news-stats">
+          <span>❤️ 87</span>
+          <span>💬 12</span>
+          <span>↗️ 45</span>
+        </div>
+      </div>
+
+      <!-- ★ Another compact nomination (different city, algorithmic recommendation) -->
+      <div class="favorite-compact">
+        <div class="compact-tag">⭐ Community Favorite · Mountain View, CA</div>
+        <div class="compact-body">
+          <div class="compact-title">Dana Street Roasting Co.</div>
+          <div class="compact-sub">☕ Coffee Shop · Roastery · 9 nominations</div>
+          <div class="compact-quote">"The best coffee shop in the Bay Area. They roast their own beans and the staff treats you like family."</div>
+        </div>
+        <div class="compact-footer">
+          <span>❤️ 97</span>
+          <span>💬 18</span>
+          <span>↗️ Share</span>
+          <span class="sponsored-label">Popular near you</span>
+        </div>
+      </div>
+
+      <!-- News 5 banner -->
+      <div class="news-card">
+        <div class="news-banner">🌵</div>
+        <div class="news-banner-body">
+          <div class="news-title">Saguaro National Park Breaks Visitor Record: Tips for Beating the Crowds</div>
+          <div class="news-meta">
+            <span>AZ Central</span>
+            <span class="dot"></span>
+            <span>10h ago</span>
+            <span class="dot"></span>
+            <span>3.4k reads</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- LOCAL FEED                           -->
+    <!-- ════════════════════════════════════ -->
+    <div class="feed" id="feed-local">
+
+      <!-- Big CTA -->
+      <div class="cta-card" onclick="openForm()">
+        <div class="cta-badge">✨ Community Spotlight</div>
+        <h2>Nominate Your Favorite Local Business</h2>
+        <p>Tell us about a business that makes your community special. They could be featured to millions of local readers!</p>
+        <button class="cta-btn" onclick="event.stopPropagation(); openForm()">Nominate Now →</button>
+        <div class="social-proof">🔥 1,247 nominations this week in Tucson</div>
+      </div>
+
+      <!-- Community Favorite Card 1 (full) -->
+      <div class="favorite-card">
+        <div class="card-header">
+          <div class="source-icon">⭐</div>
+          <div class="source-info">
+            <div class="source-name">Community Favorite</div>
+            <div class="source-meta">Tucson, AZ · Nominated by locals</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="nominate-count">❤️ 23 people nominated this business</div>
+          <div class="biz-name">
+            Tumerico
+            <span class="badge-icon">🏆 Top Pick</span>
+          </div>
+          <div class="biz-category">🍽️ Restaurant · Plant-Based · Mexican Fusion</div>
+          <div class="biz-quote">"Tumerico is a must-try for anyone looking for healthy, flavorful plant-based Mexican food. It's a hidden gem that brings the community together with affordable, delicious meals."</div>
+          <div class="biz-location">📍 Tucson, Arizona</div>
+        </div>
+        <div class="card-stats">
+          <span>❤️ 186</span>
+          <span>💬 42</span>
+          <span>↗️ Share</span>
+          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
+        </div>
+      </div>
+
+      <!-- Rankings -->
+      <div class="rankings-card">
+        <div class="rankings-header">
+          🏆 Top Local Businesses · Tucson
+          <span class="see-all">See All →</span>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num">1</div>
+          <div class="rank-info"><div class="rank-name">Tumerico</div><div class="rank-meta">Restaurant · Plant-Based</div></div>
+          <div class="rank-votes">23 votes</div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num">2</div>
+          <div class="rank-info"><div class="rank-name">Barrio Bread</div><div class="rank-meta">Bakery · Artisan</div></div>
+          <div class="rank-votes">18 votes</div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num">3</div>
+          <div class="rank-info"><div class="rank-name">Exo Roast Co.</div><div class="rank-meta">Coffee Shop</div></div>
+          <div class="rank-votes">15 votes</div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num">4</div>
+          <div class="rank-info"><div class="rank-name">Seis Kitchen</div><div class="rank-meta">Restaurant · Mexican</div></div>
+          <div class="rank-votes">12 votes</div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num">5</div>
+          <div class="rank-info"><div class="rank-name">Antigone Books</div><div class="rank-meta">Bookstore · Independent</div></div>
+          <div class="rank-votes">10 votes</div>
+        </div>
+      </div>
+
+      <!-- Community Favorite Card 2 -->
+      <div class="favorite-card">
+        <div class="card-header">
+          <div class="source-icon">⭐</div>
+          <div class="source-info">
+            <div class="source-name">Community Favorite</div>
+            <div class="source-meta">Tucson, AZ · Nominated by locals</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="nominate-count">❤️ 18 people nominated this business</div>
+          <div class="biz-name">Barrio Bread</div>
+          <div class="biz-category">🥖 Bakery · Artisan · Sourdough</div>
+          <div class="biz-quote">"Don Guerrra's bread is incredible — he uses heritage grains from local farms. The line on Saturday mornings is worth every minute. True Tucson treasure."</div>
+          <div class="biz-location">📍 Tucson, Arizona</div>
+        </div>
+        <div class="card-stats">
+          <span>❤️ 154</span>
+          <span>💬 38</span>
+          <span>↗️ Share</span>
+          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
+        </div>
+      </div>
+
+      <!-- Section: Newly Nominated -->
+      <div class="section-divider">🆕 Recently Nominated</div>
+
+      <!-- Community Favorite Card 3 -->
+      <div class="favorite-card">
+        <div class="card-header">
+          <div class="source-icon">⭐</div>
+          <div class="source-info">
+            <div class="source-name">Community Favorite</div>
+            <div class="source-meta">Tucson, AZ · 2h ago</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="nominate-count">❤️ 3 people nominated this business</div>
+          <div class="biz-name">Sparkroot</div>
+          <div class="biz-category">🧘 Health / Wellness · Holistic Center</div>
+          <div class="biz-quote">"Sparkroot changed my approach to health. Their acupuncture and community classes are affordable and genuinely healing. It's wellness for real people."</div>
+          <div class="biz-location">📍 Tucson, Arizona</div>
+        </div>
+        <div class="card-stats">
+          <span>❤️ 24</span>
+          <span>💬 5</span>
+          <span>↗️ Share</span>
+          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
+        </div>
+      </div>
+
+      <!-- Community Favorite Card 4 -->
+      <div class="favorite-card">
+        <div class="card-header">
+          <div class="source-icon">⭐</div>
+          <div class="source-info">
+            <div class="source-name">Community Favorite</div>
+            <div class="source-meta">Tucson, AZ · 4h ago</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="nominate-count">❤️ 1 person nominated this business</div>
+          <div class="biz-name">Pop Cycle</div>
+          <div class="biz-category">🎨 Retail · Gift Shop · Local Art</div>
+          <div class="biz-quote">"The best shop for unique local gifts! Everything is made by Arizona artists. Friendly staff and you always find something you didn't know you needed."</div>
+          <div class="biz-location">📍 Tucson, Arizona</div>
+        </div>
+        <div class="card-stats">
+          <span>❤️ 11</span>
+          <span>💬 2</span>
+          <span>↗️ Share</span>
+          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <button class="nav-item active"><span class="nav-icon">🏠</span>Home</button>
+  <button class="nav-item"><span class="nav-icon">🔍</span>Discover</button>
+  <button class="nav-item" onclick="openForm()"><span class="nav-icon" style="font-size:28px; color:var(--red);">⊕</span>Nominate</button>
+  <button class="nav-item"><span class="nav-icon">🔔</span>Alerts</button>
+  <button class="nav-item"><span class="nav-icon">👤</span>Me</button>
+</div>
+
+<!-- Nomination Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div id="formView">
+      <div class="modal-header">
+        <h3>Nominate a Business</h3>
+        <button class="modal-close" onclick="closeForm()">✕</button>
+      </div>
+      <form class="nom-form" onsubmit="submitForm(event)">
+        <div class="form-group">
+          <label>Business Name <span class="required">*</span></label>
+          <input type="text" id="bizName" placeholder="e.g. Joe's Pizza" required>
+        </div>
+        <div class="form-group">
+          <label>Category <span class="required">*</span></label>
+          <select id="bizCategory" required>
+            <option value="" disabled selected>Select a category</option>
+            <option>Restaurant / Food</option>
+            <option>Coffee / Bakery</option>
+            <option>Health / Wellness</option>
+            <option>Retail / Shopping</option>
+            <option>Home Services</option>
+            <option>Beauty / Salon</option>
+            <option>Auto Services</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Why do you love this business? <span class="required">*</span></label>
+          <textarea id="bizReason" placeholder="Tell us what makes them special — their story, service, community impact..." required></textarea>
+          <div class="hint">Great nominations include a personal story or specific detail</div>
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <div class="location-auto">
+            <span class="loc-dot"></span>
+            Detected: Tucson, Arizona
+            <span style="margin-left:auto; font-size:11px; color:var(--red); cursor:pointer;">Change</span>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Submit Nomination</button>
+      </form>
+    </div>
+    <div class="success-screen" id="successView">
+      <div class="success-icon">✓</div>
+      <h3>Nomination Submitted!</h3>
+      <p>Thanks for supporting your local community.<br>Your nomination will appear in the local feed soon.</p>
+      <div class="success-preview">
+        <div class="preview-label">Your nomination</div>
+        <div class="preview-biz" id="previewBiz"></div>
+        <div class="preview-quote" id="previewQuote"></div>
+      </div>
+      <button class="share-btn" onclick="showToast('Link copied! Share it with friends.')">↗️ Share this nomination</button>
+      <button class="done-btn" onclick="closeForm()">Back to Feed</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const modal = document.getElementById('modal');
+  const formView = document.getElementById('formView');
+  const successView = document.getElementById('successView');
+  const feedSlider = document.getElementById('feedSlider');
+  let currentTab = 'local';
+
+  // ── Tab switching ──
+  function switchTab(tab) {
+    if (tab === currentTab) return;
+    currentTab = tab;
+
+    document.querySelectorAll('.tabs span').forEach(s => s.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+
+    if (tab === 'local') {
+      feedSlider.classList.add('at-local');
+    } else {
+      feedSlider.classList.remove('at-local');
+    }
+
+    // Scroll to top of the target feed
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Swipe gesture for tabs ──
+  let touchStartX = 0;
+  let touchStartY = 0;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (modal.classList.contains('active')) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0 && currentTab === 'foryou') switchTab('local');
+      else if (dx > 0 && currentTab === 'local') switchTab('foryou');
+    }
+  }, { passive: true });
+
+  // ── Form ──
+  function openForm() {
+    formView.style.display = 'block';
+    successView.classList.remove('active');
+    modal.classList.add('active');
+  }
+
+  function closeForm() {
+    modal.classList.remove('active');
+    document.querySelector('.nom-form').reset();
+  }
+
+  function submitForm(e) {
+    e.preventDefault();
+    const name = document.getElementById('bizName').value;
+    const category = document.getElementById('bizCategory').value;
+    const reason = document.getElementById('bizReason').value;
+
+    document.getElementById('previewBiz').textContent = name;
+    document.getElementById('previewQuote').textContent = `"${reason}"`;
+
+    formView.style.display = 'none';
+    successView.classList.add('active');
+
+    setTimeout(() => {
+      addCardToLocalFeed(name, category, reason);
+      addCompactToForYouFeed(name, category, reason);
+    }, 500);
+  }
+
+  function addCardToLocalFeed(name, category, reason) {
+    const card = document.createElement('div');
+    card.className = 'favorite-card';
+    card.style.animation = 'slideUp 0.3s ease';
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="source-icon">⭐</div>
+        <div class="source-info">
+          <div class="source-name">Community Favorite</div>
+          <div class="source-meta">Tucson, AZ · Just now</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="nominate-count">❤️ 1 person nominated this business</div>
+        <div class="biz-name">${esc(name)}</div>
+        <div class="biz-category">${esc(category)}</div>
+        <div class="biz-quote">"${esc(reason)}"</div>
+        <div class="biz-location">📍 Tucson, Arizona</div>
+      </div>
+      <div class="card-stats">
+        <span>❤️ 1</span>
+        <span>💬 0</span>
+        <span>↗️ Share</span>
+        <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
+      </div>
+    `;
+    const localFeed = document.getElementById('feed-local');
+    localFeed.insertBefore(card, localFeed.children[1]);
+    initQuoteToggles(card);
+  }
+
+  function addCompactToForYouFeed(name, category, reason) {
+    const card = document.createElement('div');
+    card.className = 'favorite-compact';
+    card.style.animation = 'slideUp 0.3s ease';
+    card.innerHTML = `
+      <div class="compact-tag">⭐ Community Favorite · Tucson</div>
+      <div class="compact-body">
+        <div class="compact-title">${esc(name)}</div>
+        <div class="compact-sub">${esc(category)} · 1 nomination</div>
+        <div class="compact-quote">"${esc(reason)}"</div>
+      </div>
+      <div class="compact-footer">
+        <span>❤️ 1</span>
+        <span>💬 0</span>
+        <span>↗️ Share</span>
+        <span class="sponsored-label">Just nominated</span>
+      </div>
+    `;
+    const fyFeed = document.getElementById('feed-foryou');
+    // Insert after 3rd item (between news)
+    const insertAt = Math.min(3, fyFeed.children.length);
+    fyFeed.insertBefore(card, fyFeed.children[insertAt]);
+  }
+
+  function esc(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeForm();
+  });
+
+  // ── Quote expand/collapse ──
+  function initQuoteToggles(root) {
+    (root || document).querySelectorAll('.biz-quote:not([data-toggle-init])').forEach(q => {
+      q.setAttribute('data-toggle-init', '1');
+      // Wait for layout to check if text is actually clamped
+      requestAnimationFrame(() => {
+        if (q.scrollHeight > q.clientHeight + 2) {
+          const toggle = document.createElement('div');
+          toggle.className = 'biz-quote-toggle';
+          toggle.textContent = 'Read more';
+          q.after(toggle);
+          const expand = () => {
+            const isExpanded = q.classList.toggle('expanded');
+            toggle.textContent = isExpanded ? 'Show less' : 'Read more';
+          };
+          q.addEventListener('click', expand);
+          toggle.addEventListener('click', expand);
+        }
+      });
+    });
+  }
+  initQuoteToggles();
+</script>
+
+</body>
+</html>
