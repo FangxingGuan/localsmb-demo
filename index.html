@@ -1495,6 +1495,10 @@
       const nudge = document.getElementById('nudge-' + cardId);
       if (nudge) {
         nudge.classList.add('active');
+        // Scroll nudge into view so it's visible near the card
+        setTimeout(() => {
+          nudge.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 50);
         // Auto-focus the quick input
         setTimeout(() => {
           const input = document.querySelector('#qnom-' + cardId + ' .quick-nom-input');
