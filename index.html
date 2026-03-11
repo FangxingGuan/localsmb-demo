@@ -188,6 +188,42 @@
     color: #059669; pointer-events: none;
   }
 
+  /* ── Multi-quote carousel ── */
+  .quote-carousel { position: relative; }
+  .quote-carousel .biz-quote { margin-bottom: 6px; }
+  .quote-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 0 8px;
+  }
+  .quote-dots {
+    display: flex; gap: 5px; align-items: center;
+  }
+  .quote-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border); cursor: pointer; transition: all 0.2s;
+  }
+  .quote-dot.active { background: var(--red); width: 16px; border-radius: 3px; }
+  .quote-arrows {
+    display: flex; gap: 4px;
+  }
+  .quote-arrow {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--gray-light); border: none;
+    font-size: 12px; cursor: pointer; color: var(--dark);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .quote-arrow:hover { background: var(--border); }
+  .quote-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+  .quote-author {
+    font-size: 11px; color: var(--gray); font-style: italic;
+    margin-bottom: 10px; padding-left: 14px;
+  }
+  .multi-count {
+    font-size: 12px; color: var(--red); font-weight: 600;
+    display: flex; align-items: center; gap: 4px; margin-bottom: 8px;
+  }
+
   /* ── Quick Nominate Bar (bottom of card) ── */
   .quick-nom {
     padding: 0 16px 12px;
@@ -789,6 +825,14 @@
     { name: "Helping Homes Exteriors", city: "West Carrollton", state: "Ohio", category: "Home Services/Contractor", story: "We are a veteran owned and operated local business committed to providing our community with the best products the best installers and the best prices", nominator: "Amie P." },
     { name: "Rickey Staley Painting", city: "Wilkes County", state: "North Carolina", category: "Home Services/Contractor", story: "Awesome work and people", nominator: "Rickey S." },
     { name: "Wayne Edwards Auto", city: "Lake Village", state: "Arkansas", category: "Service", story: "The owner's hard work helped me and many others also teaching life lessons and being active in the community and churches.", nominator: "Eric T." },
+    // ── Duplicate nominations (simulating multiple users nominating same business) ──
+    { name: "Ghini's French Caffe", city: "Tucson", state: "Arizona", category: "Restaurant/Food Service", story: "Best croissants in Tucson, hands down. Coralie remembers every regular by name. The French onion soup is legendary.", rating: 5, nominator: "Sarah M." },
+    { name: "Ghini's French Caffe", city: "Tucson", state: "Arizona", category: "Restaurant/Food Service", story: "We've been coming here every Sunday for 5 years. It feels like a little piece of Paris in the desert. My kids love the crepes.", rating: 5, nominator: "Mike R." },
+    { name: "Adriana's", city: "Saint Louis", state: "Missouri", category: "Restaurant/Food Service", story: "The meatball sub changed my life. Not exaggerating. Tony and his family make you feel like you're eating in their home kitchen.", rating: 5, nominator: "Karen W." },
+    { name: "Adriana's", city: "Saint Louis", state: "Missouri", category: "Restaurant/Food Service", story: "Best Italian on The Hill, period. The portion sizes are insane and everything is made fresh. A St. Louis institution.", rating: 5, nominator: "James P." },
+    { name: "Little Venice Restaurant", city: "Binghamton", state: "New York", category: "Restaurant/Food Service", story: "A Binghamton landmark! The spiedies are the best you'll ever have. Been going with my family since I was a kid.", rating: 5, nominator: "Lisa T." },
+    { name: "Bebber", city: "Taylorsville", state: "North Carolina", category: "Restaurant/Food Service", story: "Mr. Bebber is what small town business is all about. He still gives kids free candy and knows everyone's name. The milkshakes are worth driving an hour for.", rating: 5, nominator: "Tommy G.", claimed: true },
+    { name: "Iron Pot", city: "Kent", state: "Washington", category: "Restaurant/Food Service", story: "Hidden gem! The pho is incredible and so affordable. The whole family works there and they genuinely care about every customer.", rating: 5, nominator: "Ashley N." },
   ];
 
   // ── Category emoji map ──
@@ -824,10 +868,32 @@
   }
   function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
+  // ── Merge duplicate nominations ──
+  function mergeNominations(data) {
+    const map = new Map();
+    data.forEach(d => {
+      const key = d.name.toLowerCase().trim();
+      if (map.has(key)) {
+        const existing = map.get(key);
+        existing.nominations.push({ story: d.story, nominator: d.nominator });
+        if (d.claimed) existing.claimed = true;
+        if (d.rating) existing.rating = d.rating;
+      } else {
+        map.set(key, {
+          ...d,
+          nominations: [{ story: d.story, nominator: d.nominator }],
+        });
+      }
+    });
+    return Array.from(map.values());
+  }
+
+  const mergedData = mergeNominations(surveyData);
+
   // ── Build state-based rankings ──
   function getStateCounts() {
     const counts = {};
-    surveyData.forEach(d => {
+    mergedData.forEach(d => {
       const key = d.state;
       if (!counts[key]) counts[key] = [];
       counts[key].push(d);
@@ -837,9 +903,6 @@
 
   // ── Generate full card HTML ──
   function fullCardHTML(d, timeLabel) {
-    const nominatorLine = d.nominator
-      ? `<div class="nominated-by">Nominated by ${esc(d.nominator)}</div>`
-      : '';
     const claimedBadge = d.claimed
       ? `<span class="claimed-badge">✓ Claimed</span>`
       : '';
@@ -847,8 +910,40 @@
     const comments = randInt(0, 40);
     const cardId = 'card-' + Math.random().toString(36).slice(2, 8);
     const catShort = d.category.split('/')[0].split('(')[0].trim();
+    const noms = d.nominations || [{ story: d.story, nominator: d.nominator }];
+    const nomCount = noms.length;
+    const isMulti = nomCount > 1;
+    _nomDataByCardId[cardId] = noms;
+
+    // Quote section
+    let quoteHTML = '';
+    if (isMulti) {
+      quoteHTML += `<div class="multi-count">❤️ ${nomCount} people nominated this business</div>`;
+      quoteHTML += `<div class="quote-carousel" id="carousel-${cardId}">`;
+      noms.forEach((n, i) => {
+        quoteHTML += `<div class="biz-quote" data-quote-idx="${i}" style="${i > 0 ? 'display:none' : ''}">"${esc(n.story)}"</div>`;
+      });
+      quoteHTML += `<div class="quote-author" id="author-${cardId}">— ${esc(noms[0].nominator || 'Anonymous')}</div>`;
+      quoteHTML += `<div class="quote-nav">
+        <div class="quote-dots">
+          ${noms.map((_, i) => `<div class="quote-dot ${i === 0 ? 'active' : ''}" onclick="goQuote('${cardId}', ${i})"></div>`).join('')}
+        </div>
+        <div class="quote-arrows">
+          <button class="quote-arrow" onclick="navQuote('${cardId}', -1)" disabled>‹</button>
+          <button class="quote-arrow" onclick="navQuote('${cardId}', 1)">›</button>
+        </div>
+      </div>`;
+      quoteHTML += '</div>';
+    } else {
+      const nom = noms[0];
+      if (nom.nominator) {
+        quoteHTML += `<div class="nominated-by">Nominated by ${esc(nom.nominator)}</div>`;
+      }
+      quoteHTML += `<div class="biz-quote">"${esc(nom.story)}"</div>`;
+    }
+
     return `
-      <div class="favorite-card" id="${cardId}" data-category="${esc(d.category)}" data-city="${esc(d.city)}" data-state="${esc(d.state)}">
+      <div class="favorite-card" id="${cardId}" data-category="${esc(d.category)}" data-city="${esc(d.city)}" data-state="${esc(d.state)}" data-quote-idx="0" data-quote-count="${nomCount}">
         <div class="card-header">
           <div class="source-icon">⭐</div>
           <div class="source-info">
@@ -857,10 +952,9 @@
           </div>
         </div>
         <div class="card-body">
-          ${nominatorLine}
-          <div class="biz-name">${esc(d.name)} ${claimedBadge}</div>
+          <div class="biz-name">${esc(d.name)} ${claimedBadge}${isMulti ? ` <span class="badge-icon">🔥 ${nomCount}x Nominated</span>` : ''}</div>
           <div class="biz-category">${emoji(d.category)} ${esc(d.category)}</div>
-          <div class="biz-quote">"${esc(d.story)}"</div>
+          ${quoteHTML}
           <div class="biz-location">📍 ${esc(d.city)}, ${esc(d.state)}</div>
         </div>
         <div class="card-stats">
@@ -885,6 +979,44 @@
           <div class="quick-nom-success" id="qsuccess-${cardId}">✓ Nomination submitted! It will appear in the feed soon.</div>
         </div>
       </div>`;
+  }
+
+  // ── Quote carousel navigation ──
+  // Store nominations data for carousel access
+  const _nomDataByCardId = {};
+
+  function goQuote(cardId, idx) {
+    const card = document.getElementById(cardId);
+    const quotes = card.querySelectorAll('.biz-quote[data-quote-idx]');
+    const dots = card.querySelectorAll('.quote-dot');
+    const arrows = card.querySelectorAll('.quote-arrow');
+    const author = document.getElementById('author-' + cardId);
+
+    quotes.forEach(q => q.style.display = 'none');
+    dots.forEach(d => d.classList.remove('active'));
+
+    quotes[idx].style.display = '';
+    dots[idx].classList.add('active');
+    card.dataset.quoteIdx = idx;
+
+    if (arrows.length === 2) {
+      arrows[0].disabled = idx === 0;
+      arrows[1].disabled = idx === quotes.length - 1;
+    }
+
+    // Update author
+    if (author && _nomDataByCardId[cardId]) {
+      const nom = _nomDataByCardId[cardId][idx];
+      author.textContent = '— ' + (nom.nominator || 'Anonymous');
+    }
+  }
+
+  function navQuote(cardId, dir) {
+    const card = document.getElementById(cardId);
+    const current = parseInt(card.dataset.quoteIdx || 0);
+    const count = parseInt(card.dataset.quoteCount || 1);
+    const next = Math.max(0, Math.min(count - 1, current + dir));
+    if (next !== current) goQuote(cardId, next);
   }
 
   // ── Generate compact card HTML ──
@@ -962,7 +1094,7 @@
   // ── Build city guide data ──
   function buildCityGuides() {
     const byState = {};
-    surveyData.forEach(d => {
+    mergedData.forEach(d => {
       if (!byState[d.state]) byState[d.state] = [];
       byState[d.state].push(d);
     });
@@ -977,7 +1109,7 @@
   function buildFeeds() {
     const localFeed = document.getElementById('feed-local');
     const fyFeed = document.getElementById('feed-foryou');
-    const total = surveyData.length;
+    const total = mergedData.length;
     const stateCounts = getStateCounts();
     const topStates = Object.entries(stateCounts).sort((a,b) => b[1].length - a[1].length);
     const cityGuides = buildCityGuides();
@@ -996,8 +1128,8 @@
       </div>`;
 
     // Stats bar
-    const catCount = new Set(surveyData.map(d => d.category)).size;
-    const cityCount = new Set(surveyData.map(d => d.city + d.state)).size;
+    const catCount = new Set(mergedData.map(d => d.category)).size;
+    const cityCount = new Set(mergedData.map(d => d.city + d.state)).size;
     localHTML += `
       <div class="stats-bar">
         <div class="stat-item"><div class="stat-num">${total}</div><div class="stat-label">Nominations</div></div>
@@ -1055,7 +1187,7 @@
 
     // First batch of nomination cards
     const timeLabels = ['Just now','2m ago','5m ago','8m ago','12m ago','15m ago','18m ago','20m ago'];
-    surveyData.slice(0, 4).forEach((d, i) => {
+    mergedData.slice(0, 4).forEach((d, i) => {
       localHTML += fullCardHTML(d, timeLabels[i]);
     });
 
@@ -1108,7 +1240,7 @@
 
     // More nominations
     localHTML += '<div class="section-divider">🆕 More Nominations</div>';
-    surveyData.slice(4).forEach((d, i) => {
+    mergedData.slice(4).forEach((d, i) => {
       // Insert another promoted card mid-feed
       if (i === 8) {
         localHTML += `
@@ -1152,7 +1284,7 @@
     // Pick a subset for For You (spread across states)
     const fyNoms = [];
     const usedStates = new Set();
-    surveyData.forEach(d => {
+    mergedData.forEach(d => {
       if (!usedStates.has(d.state) && d.story.length > 30) {
         fyNoms.push(d);
         usedStates.add(d.state);
