@@ -683,8 +683,153 @@
     white-space: nowrap;
   }
 </style>
+  /* ── Feature Guide Panel ── */
+  .feature-guide-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 200;
+    background: var(--dark); color: var(--white); border: none;
+    padding: 7px 14px; border-radius: 20px; font-size: 12px;
+    font-weight: 600; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    display: flex; align-items: center; gap: 5px;
+    transition: background 0.2s;
+  }
+  .feature-guide-toggle:hover { background: #333; }
+  .feature-guide-toggle.active { background: var(--red); }
+  .feature-guide-panel {
+    display: none; position: fixed; top: 44px; right: 12px; z-index: 200;
+    background: var(--white); border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    width: 300px; max-height: 70vh; overflow-y: auto;
+    border: 1px solid var(--border);
+  }
+  .feature-guide-panel.open { display: block; animation: fadeSlideIn 0.2s ease; }
+  .feature-guide-panel .guide-panel-title {
+    padding: 14px 16px 8px; font-size: 14px; font-weight: 800; color: var(--dark);
+    border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px;
+  }
+  .feature-guide-panel .guide-panel-sub {
+    padding: 0 16px 10px; font-size: 11px; color: var(--gray); line-height: 1.4;
+  }
+  .feature-guide-panel .guide-section {
+    padding: 6px 0; border-bottom: 1px solid var(--border);
+  }
+  .feature-guide-panel .guide-section:last-child { border-bottom: none; }
+  .feature-guide-panel .guide-section-title {
+    padding: 6px 16px 4px; font-size: 10px; font-weight: 700;
+    color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .guide-feature-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; cursor: pointer; transition: background 0.15s;
+  }
+  .guide-feature-item:hover { background: var(--gray-light); }
+  .guide-feature-item .gf-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .guide-feature-item .gf-text { flex: 1; }
+  .guide-feature-item .gf-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+  .guide-feature-item .gf-desc { font-size: 11px; color: var(--gray); line-height: 1.3; }
+  .guide-feature-item .gf-arrow { color: var(--border); font-size: 14px; }
+
+  /* ── Feature Label (inline badge on each section) ── */
+  .feature-label {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+    text-transform: uppercase; margin-bottom: 8px;
+    background: #EEF2FF; color: #4F46E5; border: 1px solid #C7D2FE;
+  }
+  .feature-label .fl-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #4F46E5;
+  }
+</style>
 </head>
 <body>
+
+<!-- Feature Guide Toggle Button -->
+<button class="feature-guide-toggle" id="guideToggleBtn" onclick="toggleFeatureGuide()">📋 Features</button>
+
+<!-- Feature Guide Panel -->
+<div class="feature-guide-panel" id="featureGuidePanel">
+  <div class="guide-panel-title">📋 Product Feature Guide</div>
+  <div class="guide-panel-sub">This demo showcases the Community Business Nomination product. Click any feature to jump to it.</div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Core Features</div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-cta')">
+      <div class="gf-icon" style="background:#FFF0F3">✨</div>
+      <div class="gf-text"><div class="gf-name">Nomination Entry</div><div class="gf-desc">CTA card to drive user nominations</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-stats')">
+      <div class="gf-icon" style="background:#F0FDF4">📊</div>
+      <div class="gf-text"><div class="gf-name">Social Proof Stats</div><div class="gf-desc">Nomination counts, cities, categories</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-card')">
+      <div class="gf-icon" style="background:#FFF7ED">⭐</div>
+      <div class="gf-text"><div class="gf-name">Community Favorite Card</div><div class="gf-desc">UGC nomination card with quote & actions</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-multi')">
+      <div class="gf-icon" style="background:#FDF2F8">🔥</div>
+      <div class="gf-text"><div class="gf-name">Multi-Nomination Merge</div><div class="gf-desc">Same business, multiple nominators with tab switch</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-ranking')">
+      <div class="gf-icon" style="background:#FFFBEB">🏆</div>
+      <div class="gf-text"><div class="gf-name">Local Rankings</div><div class="gf-desc">Top nominations by state</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Long-term Expansion</div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-discovery')">
+      <div class="gf-icon" style="background:#F0F9FF">🔍</div>
+      <div class="gf-text"><div class="gf-name">Local Service Discovery</div><div class="gf-desc">Browse services by category</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-guide')">
+      <div class="gf-icon" style="background:#FFF7ED">📖</div>
+      <div class="gf-text"><div class="gf-name">Local Business Guide</div><div class="gf-desc">City top lists by state</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Monetization</div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-promoted')">
+      <div class="gf-icon" style="background:#FFFBEB">⚡</div>
+      <div class="gf-text"><div class="gf-name">Promoted Listing</div><div class="gf-desc">Paid business placement in feed</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-claim')">
+      <div class="gf-icon" style="background:#F0FDF4">✓</div>
+      <div class="gf-text"><div class="gf-name">Business Claim</div><div class="gf-desc">Verified badge, analytics, promotion</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-ad')">
+      <div class="gf-icon" style="background:#F5F3FF">🏪</div>
+      <div class="gf-text"><div class="gf-name">Local Ads</div><div class="gf-desc">Sponsored ad units in feed</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Growth Flywheel</div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-recommend')">
+      <div class="gf-icon" style="background:#FDF2F8">👍</div>
+      <div class="gf-text"><div class="gf-name">+1 Recommend & Nudge</div><div class="gf-desc">Drives new nominations from engaged users</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+    <div class="guide-feature-item" onclick="scrollToFeature('feat-quicknom')">
+      <div class="gf-icon" style="background:#FFF0F3">💡</div>
+      <div class="gf-text"><div class="gf-name">Quick Nominate</div><div class="gf-desc">Inline lightweight nomination input</div></div>
+      <div class="gf-arrow">›</div>
+    </div>
+  </div>
+</div>
 
 <!-- Status Bar -->
 <div class="status-bar">
@@ -1115,6 +1260,7 @@
 
     // CTA
     localHTML += `
+      <div class="feature-label" id="feat-cta"><span class="fl-dot"></span>FEATURE · Nomination Entry</div>
       <div class="cta-card" onclick="openForm()">
         <div class="cta-badge">✨ Community Spotlight</div>
         <h2>Nominate Your Favorite Local Business</h2>
@@ -1127,6 +1273,7 @@
     const catCount = new Set(mergedData.map(d => d.category)).size;
     const cityCount = new Set(mergedData.map(d => d.city + d.state)).size;
     localHTML += `
+      <div class="feature-label" id="feat-stats"><span class="fl-dot"></span>FEATURE · Social Proof Stats</div>
       <div class="stats-bar">
         <div class="stat-item"><div class="stat-num">${total}</div><div class="stat-label">Nominations</div></div>
         <div class="stat-item"><div class="stat-num">${cityCount}</div><div class="stat-label">Cities</div></div>
@@ -1136,6 +1283,7 @@
 
     // ★ LOCAL SERVICE DISCOVERY
     localHTML += `
+      <div class="feature-label" id="feat-discovery"><span class="fl-dot"></span>EXPANSION · Local Service Discovery</div>
       <div class="discovery-card">
         <div class="discovery-header">🔍 Find Local Services</div>
         <div class="discovery-grid">
@@ -1151,6 +1299,7 @@
 
     // Rankings: top state
     const topState = topStates[0];
+    localHTML += `<div class="feature-label" id="feat-ranking"><span class="fl-dot"></span>FEATURE · Local Rankings</div>`;
     localHTML += `<div class="rankings-card"><div class="rankings-header">🏆 Top Nominations · ${topState[0]}<span class="see-all">See All →</span></div>`;
     topState[1].slice(0, 5).forEach((d, i) => {
       localHTML += `<div class="rank-item">
@@ -1163,6 +1312,7 @@
 
     // ★ PROMOTED LISTING (Monetization)
     localHTML += `
+      <div class="feature-label" id="feat-promoted"><span class="fl-dot"></span>MONETIZATION · Promoted Listing</div>
       <div class="promoted-card">
         <div class="promoted-tag">⚡ Promoted · Local Business</div>
         <div class="promoted-body">
@@ -1183,11 +1333,25 @@
 
     // First batch of nomination cards
     const timeLabels = ['Just now','2m ago','5m ago','8m ago','12m ago','15m ago','18m ago','20m ago'];
+    let cardLabelAdded = false, multiLabelAdded = false;
     mergedData.slice(0, 4).forEach((d, i) => {
+      const noms = d.nominations || [{ story: d.story, nominator: d.nominator }];
+      const isMulti = noms.length > 1;
+      if (!cardLabelAdded && !isMulti) {
+        localHTML += `<div class="feature-label" id="feat-card"><span class="fl-dot"></span>FEATURE · Community Favorite Card</div>`;
+        localHTML += `<div class="feature-label" id="feat-recommend"><span class="fl-dot"></span>FLYWHEEL · +1 Recommend & Nudge <span style="font-weight:400;text-transform:none">(click 👍 to try)</span></div>`;
+        localHTML += `<div class="feature-label" id="feat-quicknom"><span class="fl-dot"></span>FLYWHEEL · Quick Nominate <span style="font-weight:400;text-transform:none">(inline input below card)</span></div>`;
+        cardLabelAdded = true;
+      }
+      if (!multiLabelAdded && isMulti) {
+        localHTML += `<div class="feature-label" id="feat-multi"><span class="fl-dot"></span>FEATURE · Multi-Nomination Merge <span style="font-weight:400;text-transform:none">(click name tabs)</span></div>`;
+        multiLabelAdded = true;
+      }
       localHTML += fullCardHTML(d, timeLabels[i]);
     });
 
     // ★ LOCAL BUSINESS GUIDE (City Top Lists)
+    localHTML += `<div class="feature-label" id="feat-guide"><span class="fl-dot"></span>EXPANSION · Local Business Guide</div>`;
     localHTML += `
       <div class="guide-card">
         <div class="guide-header">
@@ -1208,6 +1372,7 @@
 
     // ★ CLAIM YOUR BUSINESS BANNER (Monetization)
     localHTML += `
+      <div class="feature-label" id="feat-claim"><span class="fl-dot"></span>MONETIZATION · Business Claim</div>
       <div class="claim-banner">
         <div class="claim-title">Own a business? Claim your page</div>
         <div class="claim-desc">Get a verified badge, respond to nominations, and promote your business to local readers.</div>
@@ -1222,6 +1387,7 @@
 
     // ★ LOCAL AD (Monetization)
     localHTML += `
+      <div class="feature-label" id="feat-ad"><span class="fl-dot"></span>MONETIZATION · Local Ads</div>
       <div class="local-ad">
         <div class="ad-label">Sponsored</div>
         <div class="ad-body">
@@ -1237,6 +1403,11 @@
     // More nominations
     localHTML += '<div class="section-divider">🆕 More Nominations</div>';
     mergedData.slice(4).forEach((d, i) => {
+      const noms2 = d.nominations || [{ story: d.story, nominator: d.nominator }];
+      if (!multiLabelAdded && noms2.length > 1) {
+        localHTML += `<div class="feature-label" id="feat-multi"><span class="fl-dot"></span>FEATURE · Multi-Nomination Merge <span style="font-weight:400;text-transform:none">(click name tabs)</span></div>`;
+        multiLabelAdded = true;
+      }
       // Insert another promoted card mid-feed
       if (i === 8) {
         localHTML += `
@@ -1593,6 +1764,38 @@
       });
     });
   }
+
+  // ── Feature Guide ──
+  function toggleFeatureGuide() {
+    const panel = document.getElementById('featureGuidePanel');
+    const btn = document.getElementById('guideToggleBtn');
+    const isOpen = panel.classList.toggle('open');
+    btn.classList.toggle('active', isOpen);
+  }
+  function scrollToFeature(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      // Make sure we're on Local tab
+      switchTab('local');
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Flash highlight
+        el.style.transition = 'box-shadow 0.3s';
+        el.style.boxShadow = '0 0 0 3px #4F46E5';
+        setTimeout(() => { el.style.boxShadow = ''; }, 1500);
+      }, 100);
+    }
+    toggleFeatureGuide();
+  }
+  // Close guide on outside click
+  document.addEventListener('click', e => {
+    const panel = document.getElementById('featureGuidePanel');
+    const btn = document.getElementById('guideToggleBtn');
+    if (panel.classList.contains('open') && !panel.contains(e.target) && !btn.contains(e.target)) {
+      panel.classList.remove('open');
+      btn.classList.remove('active');
+    }
+  });
 
   // Init
   buildFeeds();
