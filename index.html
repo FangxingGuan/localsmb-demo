@@ -408,6 +408,167 @@
     transition: opacity 0.3s; pointer-events: none; white-space: nowrap;
   }
   .toast.show { opacity: 1; }
+
+  /* ── Service Discovery Grid ── */
+  .discovery-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .discovery-card .discovery-header {
+    padding: 16px 16px 12px; font-size: 16px; font-weight: 800;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .discovery-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 4px; padding: 0 12px 14px;
+  }
+  .discovery-item {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 10px 4px; border-radius: 10px; cursor: pointer;
+    transition: background 0.15s; text-align: center;
+  }
+  .discovery-item:hover { background: var(--gray-light); }
+  .discovery-item .disc-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .discovery-item .disc-label { font-size: 11px; font-weight: 600; color: var(--dark); line-height: 1.3; }
+  .discovery-item .disc-count { font-size: 10px; color: var(--gray); }
+
+  /* ── City Guide Card ── */
+  .guide-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .guide-card .guide-header {
+    padding: 16px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .guide-card .guide-title { font-size: 16px; font-weight: 800; }
+  .guide-card .guide-sub { font-size: 11px; color: var(--gray); margin-top: 2px; }
+  .guide-tabs {
+    display: flex; gap: 8px; padding: 0 16px 12px; overflow-x: auto;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .guide-tabs::-webkit-scrollbar { display: none; }
+  .guide-tab {
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    white-space: nowrap; cursor: pointer; border: 1.5px solid var(--border);
+    background: var(--white); color: var(--gray); transition: all 0.2s;
+  }
+  .guide-tab.active { background: var(--red); color: var(--white); border-color: var(--red); }
+  .guide-tab:hover:not(.active) { border-color: var(--red); color: var(--red); }
+  .guide-list { padding: 0 16px 12px; }
+  .guide-list-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 0;
+    border-bottom: 1px solid var(--border); cursor: pointer;
+  }
+  .guide-list-item:last-child { border-bottom: none; }
+  .guide-list-item .guide-rank {
+    font-size: 16px; font-weight: 800; width: 24px; text-align: center;
+  }
+  .guide-list-item:nth-child(1) .guide-rank { color: #F59E0B; }
+  .guide-list-item:nth-child(2) .guide-rank { color: #9CA3AF; }
+  .guide-list-item:nth-child(3) .guide-rank { color: #CD7F32; }
+  .guide-list-item .guide-biz { flex: 1; }
+  .guide-list-item .guide-biz-name { font-size: 14px; font-weight: 600; }
+  .guide-list-item .guide-biz-meta { font-size: 11px; color: var(--gray); margin-top: 1px; }
+  .guide-list-item .guide-rating {
+    font-size: 12px; font-weight: 700; color: #F59E0B;
+    display: flex; align-items: center; gap: 2px;
+  }
+
+  /* ── Promoted Listing ── */
+  .promoted-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+    border: 1.5px solid #E8D5F5;
+  }
+  .promoted-card .promoted-tag {
+    display: flex; align-items: center; gap: 4px;
+    padding: 6px 16px; background: linear-gradient(90deg, #F3E8FF, #EDE9FE);
+    font-size: 11px; font-weight: 700; color: #7C3AED;
+  }
+  .promoted-card .promoted-body { padding: 12px 16px; }
+  .promoted-card .promoted-name {
+    font-size: 16px; font-weight: 800; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .promoted-card .promoted-sub { font-size: 12px; color: var(--gray); margin-bottom: 8px; }
+  .promoted-card .promoted-desc { font-size: 13px; line-height: 1.5; color: #444; margin-bottom: 10px; }
+  .promoted-card .promoted-offer {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #FEF3C7; color: #92400E; font-size: 12px; font-weight: 600;
+    padding: 6px 12px; border-radius: 8px; margin-bottom: 8px;
+  }
+  .promoted-card .promoted-actions {
+    display: flex; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--border);
+  }
+  .promoted-card .promoted-btn {
+    flex: 1; padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    text-align: center; cursor: pointer; border: none; transition: opacity 0.2s;
+  }
+  .promoted-btn.primary { background: #7C3AED; color: var(--white); }
+  .promoted-btn.secondary { background: var(--gray-light); color: var(--dark); }
+  .promoted-btn:active { opacity: 0.7; }
+
+  /* ── Claim Banner ── */
+  .claim-banner {
+    background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+    border-radius: var(--radius); padding: 20px; color: var(--white);
+    position: relative; overflow: hidden;
+  }
+  .claim-banner::after {
+    content: ''; position: absolute; top: -20px; right: -20px;
+    width: 100px; height: 100px; background: rgba(255,255,255,0.05); border-radius: 50%;
+  }
+  .claim-banner .claim-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .claim-banner .claim-desc { font-size: 13px; opacity: 0.8; line-height: 1.5; margin-bottom: 14px; }
+  .claim-banner .claim-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--white); color: var(--dark); border: none;
+    padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 700;
+    cursor: pointer;
+  }
+  .claim-features {
+    display: flex; gap: 12px; margin-top: 12px;
+  }
+  .claim-features .cf-item {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 11px; opacity: 0.7;
+  }
+
+  /* ── Claimed badge ── */
+  .claimed-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #ECFDF5; color: #059669; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px;
+  }
+
+  /* ── Local Ad ── */
+  .local-ad {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+    border: 1px dashed #D1D5DB;
+  }
+  .local-ad .ad-label {
+    font-size: 10px; color: #9CA3AF; padding: 6px 16px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .local-ad .ad-body { display: flex; gap: 12px; padding: 8px 16px 14px; align-items: center; }
+  .local-ad .ad-icon {
+    width: 48px; height: 48px; border-radius: 10px;
+    background: linear-gradient(135deg, #7C3AED, #A78BFA);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .local-ad .ad-text { flex: 1; }
+  .local-ad .ad-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .local-ad .ad-sub { font-size: 12px; color: var(--gray); }
+  .local-ad .ad-cta {
+    font-size: 12px; color: #7C3AED; font-weight: 700; cursor: pointer;
+    white-space: nowrap;
+  }
 </style>
 </head>
 <body>
@@ -517,7 +678,7 @@
     { name: "Mals Bake House", city: "Carmi", state: "Illinois", category: "Restaurant/Food Service", story: "From Carmi and has a trash for baking the best sweets", rating: 5, nominator: "Nancy R." },
     { name: "Adriana's", city: "Saint Louis", state: "Missouri", category: "Restaurant/Food Service", story: "Family run, best sandwiches in town, friendly, unpretentious staff.", rating: 5, nominator: "David M." },
     { name: "Salon Aer", city: "Atascadero", state: "California", category: "Service", story: "Kind personal service bring smiles and refreshment to people. These days it really matters. It's real", rating: 5, nominator: "Naomi" },
-    { name: "Ghini's French Caffe", city: "Tucson", state: "Arizona", category: "Restaurant/Food Service", story: "Not only does Ghini's offer great food (along with her father's bakery), but Chef Coralie is very involved in the local community & supports other local restaurants & businesses.", rating: 5, nominator: "AJ F." },
+    { name: "Ghini's French Caffe", city: "Tucson", state: "Arizona", category: "Restaurant/Food Service", story: "Not only does Ghini's offer great food (along with her father's bakery), but Chef Coralie is very involved in the local community & supports other local restaurants & businesses.", rating: 5, nominator: "AJ F.", claimed: true },
     { name: "Teds Pizza", city: "Menomonie", state: "Wisconsin", category: "Restaurant/Food Service", story: "Same great food at a low price for over 50yrs", rating: 5, nominator: "Tim D." },
     { name: "Dr. Maggi Smith Podiatrist", city: "Toledo", state: "Ohio", category: "Health & Wellness", story: "Unlike any doctor I have ever had, she explains takes time and does not make you feel like a burden always smiling, always cheerful. And I just wish every doctor could have her attitude about care for their patients.", rating: 5, nominator: "Elaine P." },
     { name: "Pfeifer Studio", city: "Bernalillo", state: "New Mexico", category: "Other", story: "Unique handcrafted furniture manufactured locally and sold worldwide.", rating: 5, nominator: "Thomas W." },
@@ -530,7 +691,7 @@
     { name: "Magpie Mercantile", city: "Bertram", state: "Texas", category: "Other", story: "Support of local farmers, and unique quality health products", rating: 5, nominator: "Sharon M." },
     { name: "Tillander Contracting", city: "Butler", state: "Pennsylvania", category: "Other", story: "They do their work to be the best", rating: 5, nominator: "Marsha T." },
     { name: "Moot Meat", city: "Mount Prospect", state: "Illinois", category: "Restaurant/Food Service", story: "Great smoked meats and love the side of garlic. Great customer service as well. You cannot beat that.", rating: 5, nominator: "Leticia B." },
-    { name: "Kary Environmental Services", city: "Mesa", state: "Arizona", category: "Other", story: "They are a family owned and operated small business, serving the environmental needs of most of Arizona since 1985. They handle environmental situations, biohazard situations, crime scene clean ups, and they now have a construction and demolition division as well!! Not to mention all their charitable efforts for almost every community across the State of Arizona!!", rating: 5, nominator: "Kelley M." },
+    { name: "Kary Environmental Services", city: "Mesa", state: "Arizona", category: "Other", story: "They are a family owned and operated small business, serving the environmental needs of most of Arizona since 1985. They handle environmental situations, biohazard situations, crime scene clean ups, and they now have a construction and demolition division as well!! Not to mention all their charitable efforts for almost every community across the State of Arizona!!", rating: 5, nominator: "Kelley M.", claimed: true },
     { name: "Hardknox Rocks & Excavating", city: "Apache Junction", state: "Arizona", category: "Other", story: "They are family owned and operated. They take pride in there work. Seeing customer's happy and smiles on there faces shows that the job is well done. They do an excellent job small or big.", rating: 5, nominator: "Laurie K." },
     { name: "Charlotte's Collection", city: "Juneau", state: "Alaska", category: "Other", story: "Because the owner is a handicapped woman who writes and sells her books. She's an advocate for homeless pregnant women as well", nominator: "Martin S." },
     { name: "The Purple Onion", city: "Cabot", state: "Arkansas", category: "Restaurant/Food Service", story: "Great food, fantastic service and personal attention to our needs that makes us feel wanted", nominator: "Mary Eileen P." },
@@ -543,10 +704,10 @@
     { name: "Anita's", city: "Oceanside", state: "California", category: "Restaurant/Food Service", story: "Excellent and professional and friendly staff and food", nominator: "Maria R." },
     { name: "Ginny's Gems", city: "Beaufort", state: "South Carolina", category: "Other", story: "Small but powerful gift for the loved ones in your life. Unique findings at an affordable price." },
     { name: "ITS Taste of India", city: "Palm Springs", state: "California", category: "Restaurant/Food Service", story: "Authentic Indian flavors", nominator: "Vic" },
-    { name: "Bebber", city: "Taylorsville", state: "North Carolina", category: "Restaurant/Food Service", story: "Very friendly. The owner can remember your name after meeting you one time and everything you tell him. If you are low on money he will let you owe him for a week or two. He always greets you like you and him have been friends forever. Bebbers has got the best milk shakes in my opinion.", nominator: "Wanda B." },
+    { name: "Bebber", city: "Taylorsville", state: "North Carolina", category: "Restaurant/Food Service", story: "Very friendly. The owner can remember your name after meeting you one time and everything you tell him. If you are low on money he will let you owe him for a week or two. He always greets you like you and him have been friends forever. Bebbers has got the best milk shakes in my opinion.", nominator: "Wanda B.", claimed: true },
     { name: "Carlson Drug", city: "Ortonville", state: "Minnesota", category: "Health & Wellness", story: "As it turns out my husband went to school with Mike the owner, they played hockey together as kids. They know all their customers and are very welcoming to all. I trust Mike with any questions about new medicines.", nominator: "Shari F." },
     { name: "Dress Culture", city: "Bloomington", state: "Illinois", category: "Retail/Boutique", story: "This is a young girl's dream come true. Her love of fashion. Her love of making others happy. Giving back to the community that has given her so much. Providing stunning Prom dresses and fashion for all occasions.", nominator: "Cheryl D." },
-    { name: "Chen's Chinese Bistro", city: "Gold Canyon", state: "Arizona", category: "Restaurant/Food Service", story: "Have been a patron for years, food is always consistent in flavor, service is great!!", nominator: "Beverly L." },
+    { name: "Chen's Chinese Bistro", city: "Gold Canyon", state: "Arizona", category: "Restaurant/Food Service", story: "Have been a patron for years, food is always consistent in flavor, service is great!!", nominator: "Beverly L.", claimed: true },
     { name: "Triad Pain Management", city: "Gold Canyon", state: "Arizona", category: "Health & Wellness", story: "Incredible Staff!! Feel like you are family. The staff is exceptional and they listen", nominator: "Beverly L." },
     { name: "Perogues Restaurant", city: "Bismarck", state: "North Dakota", category: "Restaurant/Food Service", story: "Fine dining with great service that serves unique and varied food items. Friendly staff and proprietors.", nominator: "Irish L." },
     { name: "El Extapia", city: "Medical Lake", state: "Washington", category: "Restaurant/Food Service", story: "My very first choice to dine out. Great food, best Mexican I have had in all my travels. Great service. Flavorful and fresh. All the locals love it. Their prices are excellent for what you get and portion sizes are generous.", nominator: "Sheree" },
@@ -612,6 +773,9 @@
     const nominatorLine = d.nominator
       ? `<div class="nominated-by">Nominated by ${esc(d.nominator)}</div>`
       : '';
+    const claimedBadge = d.claimed
+      ? `<span class="claimed-badge">✓ Claimed</span>`
+      : '';
     const likes = randInt(5, 200);
     const comments = randInt(0, 40);
     return `
@@ -625,7 +789,7 @@
         </div>
         <div class="card-body">
           ${nominatorLine}
-          <div class="biz-name">${esc(d.name)}</div>
+          <div class="biz-name">${esc(d.name)} ${claimedBadge}</div>
           <div class="biz-category">${emoji(d.category)} ${esc(d.category)}</div>
           <div class="biz-quote">"${esc(d.story)}"</div>
           <div class="biz-location">📍 ${esc(d.city)}, ${esc(d.state)}</div>
@@ -695,6 +859,34 @@
     </div>`;
   }
 
+  // ── Service Discovery categories ──
+  const serviceCategories = [
+    { icon: '🍽️', label: 'Restaurants', color: '#FEF2F2', count: 22 },
+    { icon: '☕', label: 'Coffee & Bakery', color: '#FFF7ED', count: 3 },
+    { icon: '🧘', label: 'Health & Wellness', color: '#F0FDF4', count: 6 },
+    { icon: '🛍️', label: 'Retail & Shopping', color: '#EFF6FF', count: 3 },
+    { icon: '🔧', label: 'Contractors', color: '#FDF4FF', count: 4 },
+    { icon: '✂️', label: 'Salons & Spas', color: '#FFF1F2', count: 2 },
+    { icon: '🚗', label: 'Auto Repair', color: '#F5F3FF', count: 2 },
+    { icon: '🩺', label: 'Doctors', color: '#ECFDF5', count: 3 },
+    { icon: '🐾', label: 'Pet Services', color: '#FEF9C3', count: 1 },
+    { icon: '🏠', label: 'Real Estate', color: '#F0F9FF', count: 1 },
+    { icon: '📚', label: 'Education', color: '#FDF2F8', count: 1 },
+    { icon: '🎨', label: 'Arts & Crafts', color: '#FFFBEB', count: 2 },
+  ];
+
+  // ── Build city guide data ──
+  function buildCityGuides() {
+    const byState = {};
+    surveyData.forEach(d => {
+      if (!byState[d.state]) byState[d.state] = [];
+      byState[d.state].push(d);
+    });
+    return Object.entries(byState)
+      .filter(([_, arr]) => arr.length >= 2)
+      .sort((a, b) => b[1].length - a[1].length);
+  }
+
   // ══════════════════════════════════════
   // Build feeds
   // ══════════════════════════════════════
@@ -703,8 +895,8 @@
     const fyFeed = document.getElementById('feed-foryou');
     const total = surveyData.length;
     const stateCounts = getStateCounts();
-    // Find top states by count
     const topStates = Object.entries(stateCounts).sort((a,b) => b[1].length - a[1].length);
+    const cityGuides = buildCityGuides();
 
     // ── LOCAL FEED ──
     let localHTML = '';
@@ -730,6 +922,21 @@
         <div class="stat-item"><div class="stat-num">20min</div><div class="stat-label">Collected in</div></div>
       </div>`;
 
+    // ★ LOCAL SERVICE DISCOVERY
+    localHTML += `
+      <div class="discovery-card">
+        <div class="discovery-header">🔍 Find Local Services</div>
+        <div class="discovery-grid">
+          ${serviceCategories.map(c => `
+            <div class="discovery-item" onclick="showToast('Browsing ${c.label}...')">
+              <div class="disc-icon" style="background:${c.color}">${c.icon}</div>
+              <div class="disc-label">${c.label}</div>
+              <div class="disc-count">${c.count} listed</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+
     // Rankings: top state
     const topState = topStates[0];
     localHTML += `<div class="rankings-card"><div class="rankings-header">🏆 Top Nominations · ${topState[0]}<span class="see-all">See All →</span></div>`;
@@ -742,11 +949,104 @@
     });
     localHTML += '</div>';
 
-    // All nominations as full cards
+    // ★ PROMOTED LISTING (Monetization)
+    localHTML += `
+      <div class="promoted-card">
+        <div class="promoted-tag">⚡ Promoted · Local Business</div>
+        <div class="promoted-body">
+          <div class="promoted-name">
+            Ghini's French Caffe
+            <span class="claimed-badge">✓ Claimed</span>
+          </div>
+          <div class="promoted-sub">🍽️ Restaurant · Tucson, AZ · Open Now</div>
+          <div class="promoted-desc">Chef Coralie brings a taste of France to Tucson with freshly baked pastries and classic French dishes. Community favorite since 1992.</div>
+          <div class="promoted-offer">🎁 10% off your first visit — show this card</div>
+        </div>
+        <div class="promoted-actions">
+          <button class="promoted-btn primary" onclick="showToast('Opening directions...')">📍 Directions</button>
+          <button class="promoted-btn secondary" onclick="showToast('Calling business...')">📞 Call</button>
+          <button class="promoted-btn secondary" onclick="showToast('Saved!')">🔖 Save</button>
+        </div>
+      </div>`;
+
+    // First batch of nomination cards
     const timeLabels = ['Just now','2m ago','5m ago','8m ago','12m ago','15m ago','18m ago','20m ago'];
-    surveyData.forEach((d, i) => {
-      if (i === 6) localHTML += '<div class="section-divider">🆕 More Nominations</div>';
-      localHTML += fullCardHTML(d, timeLabels[Math.min(i, timeLabels.length - 1)]);
+    surveyData.slice(0, 4).forEach((d, i) => {
+      localHTML += fullCardHTML(d, timeLabels[i]);
+    });
+
+    // ★ LOCAL BUSINESS GUIDE (City Top Lists)
+    localHTML += `
+      <div class="guide-card">
+        <div class="guide-header">
+          <div>
+            <div class="guide-title">📖 Local Business Guide</div>
+            <div class="guide-sub">Top picks by state, recommended by your community</div>
+          </div>
+        </div>
+        <div class="guide-tabs" id="guideTabs">
+          ${cityGuides.map(([state, _], i) => `
+            <div class="guide-tab ${i === 0 ? 'active' : ''}" onclick="switchGuide(${i})">${state} (${_.length})</div>
+          `).join('')}
+        </div>
+        <div id="guideListContainer">
+          ${buildGuideList(cityGuides[0])}
+        </div>
+      </div>`;
+
+    // ★ CLAIM YOUR BUSINESS BANNER (Monetization)
+    localHTML += `
+      <div class="claim-banner">
+        <div class="claim-title">Own a business? Claim your page</div>
+        <div class="claim-desc">Get a verified badge, respond to nominations, and promote your business to local readers.</div>
+        <button class="claim-btn" onclick="showToast('Opening business claim flow...')">Claim My Business →</button>
+        <div class="claim-features">
+          <div class="cf-item">✓ Verified Badge</div>
+          <div class="cf-item">✓ Analytics</div>
+          <div class="cf-item">✓ Respond</div>
+          <div class="cf-item">✓ Promote</div>
+        </div>
+      </div>`;
+
+    // ★ LOCAL AD (Monetization)
+    localHTML += `
+      <div class="local-ad">
+        <div class="ad-label">Sponsored</div>
+        <div class="ad-body">
+          <div class="ad-icon">🏪</div>
+          <div class="ad-text">
+            <div class="ad-title">Grow Your Local Business</div>
+            <div class="ad-sub">Reach millions of local readers with NewsBreak Ads</div>
+          </div>
+          <div class="ad-cta" onclick="showToast('Opening advertiser portal...')">Learn More ›</div>
+        </div>
+      </div>`;
+
+    // More nominations
+    localHTML += '<div class="section-divider">🆕 More Nominations</div>';
+    surveyData.slice(4).forEach((d, i) => {
+      // Insert another promoted card mid-feed
+      if (i === 8) {
+        localHTML += `
+          <div class="promoted-card">
+            <div class="promoted-tag">⚡ Promoted · Local Business</div>
+            <div class="promoted-body">
+              <div class="promoted-name">
+                Kary Environmental Services
+                <span class="claimed-badge">✓ Claimed</span>
+              </div>
+              <div class="promoted-sub">🔧 Environmental Services · Mesa, AZ</div>
+              <div class="promoted-desc">Family owned since 1985. Serving Arizona's environmental, biohazard, and construction needs with community-first values.</div>
+              <div class="promoted-offer">📋 Free consultation for new customers</div>
+            </div>
+            <div class="promoted-actions">
+              <button class="promoted-btn primary" onclick="showToast('Opening website...')">🌐 Visit Website</button>
+              <button class="promoted-btn secondary" onclick="showToast('Calling business...')">📞 Call</button>
+              <button class="promoted-btn secondary" onclick="showToast('Saved!')">🔖 Save</button>
+            </div>
+          </div>`;
+      }
+      localHTML += fullCardHTML(d, timeLabels[Math.min(i + 4, timeLabels.length - 1)]);
     });
 
     localFeed.innerHTML = localHTML;
@@ -765,7 +1065,6 @@
       <div class="trending-item"><span class="trending-num">3</span><span class="trending-text">Small town America loves local spotlight</span><span class="trending-tag">· Culture</span></div>
     </div>`;
 
-    // Interleave news + compact nomination cards
     // Pick a subset for For You (spread across states)
     const fyNoms = [];
     const usedStates = new Set();
@@ -780,11 +1079,10 @@
     const locationLabels = ['Based on your location', 'Popular near you', 'Trending in your area', 'Community pick', 'Recommended for you'];
 
     fyNoms.forEach((d, i) => {
-      // Insert a news card every 2 nominations
       if (i % 2 === 0 && newsIdx < newsCards.length) {
         fyHTML += newsCardHTML(newsCards[newsIdx++]);
       }
-      // Inline CTA after 3rd nomination
+      // Inline CTA after 3rd
       if (i === 3) {
         fyHTML += `<div class="cta-inline" onclick="openForm()">
           <div class="cta-inline-icon">📝</div>
@@ -795,10 +1093,45 @@
           <div class="cta-inline-arrow">›</div>
         </div>`;
       }
+      // ★ Promoted listing in For You feed
+      if (i === 5) {
+        fyHTML += `
+          <div class="promoted-card">
+            <div class="promoted-tag">⚡ Promoted · Local Business</div>
+            <div class="promoted-body">
+              <div class="promoted-name">
+                Chen's Chinese Bistro
+                <span class="claimed-badge">✓ Claimed</span>
+              </div>
+              <div class="promoted-sub">🍽️ Restaurant · Gold Canyon, AZ</div>
+              <div class="promoted-desc">Consistent flavor and great service for years. A community favorite for authentic Chinese cuisine.</div>
+              <div class="promoted-offer">🎁 Free appetizer with dine-in orders over $30</div>
+            </div>
+            <div class="promoted-actions">
+              <button class="promoted-btn primary" onclick="showToast('Opening menu...')">📋 View Menu</button>
+              <button class="promoted-btn secondary" onclick="showToast('Opening directions...')">📍 Directions</button>
+              <button class="promoted-btn secondary" onclick="showToast('Saved!')">🔖 Save</button>
+            </div>
+          </div>`;
+      }
+      // ★ Local Ad in For You
+      if (i === 8) {
+        fyHTML += `
+          <div class="local-ad">
+            <div class="ad-label">Sponsored</div>
+            <div class="ad-body">
+              <div class="ad-icon">🏪</div>
+              <div class="ad-text">
+                <div class="ad-title">Grow Your Local Business</div>
+                <div class="ad-sub">Reach millions of readers with NewsBreak Ads</div>
+              </div>
+              <div class="ad-cta" onclick="showToast('Opening advertiser portal...')">Learn More ›</div>
+            </div>
+          </div>`;
+      }
       fyHTML += compactCardHTML(d, locationLabels[i % locationLabels.length]);
     });
 
-    // Remaining news
     while (newsIdx < newsCards.length) {
       fyHTML += newsCardHTML(newsCards[newsIdx++]);
     }
@@ -807,6 +1140,31 @@
 
     // Init quote toggles
     initQuoteToggles();
+  }
+
+  // ── City Guide helpers ──
+  const _cityGuides = buildCityGuides();
+
+  function buildGuideList([state, businesses]) {
+    return `<div class="guide-list">
+      ${businesses.map((d, i) => `
+        <div class="guide-list-item">
+          <div class="guide-rank">${i + 1}</div>
+          <div class="guide-biz">
+            <div class="guide-biz-name">${esc(d.name)}</div>
+            <div class="guide-biz-meta">${emoji(d.category)} ${esc(d.category)} · ${esc(d.city)}</div>
+          </div>
+          <div class="guide-rating">★ ${d.rating || 5}</div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  function switchGuide(idx) {
+    document.querySelectorAll('.guide-tab').forEach((t, i) => {
+      t.classList.toggle('active', i === idx);
+    });
+    document.getElementById('guideListContainer').innerHTML = buildGuideList(_cityGuides[idx]);
   }
 
   // ══════════════════════════════════════
