@@ -181,6 +181,12 @@
   }
   .card-stats span { display: flex; align-items: center; gap: 4px; cursor: pointer; }
   .card-stats span:hover { color: var(--red); }
+  .card-stats .recommend-btn {
+    font-weight: 600; color: var(--red); transition: all 0.2s;
+  }
+  .card-stats .recommend-btn.done {
+    color: #059669; pointer-events: none;
+  }
   .nominate-count {
     font-size: 12px; color: var(--red); font-weight: 600;
     display: flex; align-items: center; gap: 4px; margin-bottom: 8px;
@@ -798,7 +804,7 @@
           <span>❤️ ${likes}</span>
           <span>💬 ${comments}</span>
           <span>↗️ Share</span>
-          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
+          <span class="recommend-btn" style="margin-left:auto" onclick="doRecommend(this)">👍 +1 Recommend</span>
         </div>
       </div>`;
   }
@@ -1240,7 +1246,7 @@
         <div class="biz-quote">"${esc(reason)}"</div>
         <div class="biz-location">📍 Tucson, Arizona</div>
       </div>
-      <div class="card-stats"><span>❤️ 1</span><span>💬 0</span><span>↗️ Share</span><span style="margin-left:auto" onclick="openForm()">📝 Nominate</span></div>`;
+      <div class="card-stats"><span>❤️ 1</span><span>💬 0</span><span>↗️ Share</span><span class="recommend-btn" style="margin-left:auto" onclick="doRecommend(this)">👍 +1 Recommend</span></div>`;
     const localFeed = document.getElementById('feed-local');
     localFeed.insertBefore(card, localFeed.children[1]);
     initQuoteToggles(card);
@@ -1270,6 +1276,12 @@
   }
 
   modal.addEventListener('click', e => { if (e.target === modal) closeForm(); });
+
+  function doRecommend(el) {
+    el.classList.add('done');
+    el.textContent = '✓ Recommended';
+    showToast('Thanks! Your recommendation counts.');
+  }
 
   // Quote expand/collapse
   function initQuoteToggles(root) {
