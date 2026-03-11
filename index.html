@@ -187,6 +187,67 @@
   .card-stats .recommend-btn.done {
     color: #059669; pointer-events: none;
   }
+
+  /* ── Quick Nominate Bar (bottom of card) ── */
+  .quick-nom {
+    padding: 0 16px 12px;
+  }
+  .quick-nom-input-row {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .quick-nom-input {
+    flex: 1; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 20px;
+    font-size: 13px; font-family: inherit; background: var(--gray-light);
+    transition: border 0.2s, background 0.2s; outline: none;
+  }
+  .quick-nom-input:focus {
+    border-color: var(--red); background: var(--white);
+  }
+  .quick-nom-input::placeholder { color: #bbb; }
+  .quick-nom-send {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--red); color: var(--white); border: none;
+    font-size: 15px; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.2s;
+  }
+  .quick-nom-send:disabled { opacity: 0.3; cursor: not-allowed; }
+  .quick-nom-send:not(:disabled):active { opacity: 0.7; }
+  .quick-nom-context {
+    font-size: 11px; color: var(--gray); margin-top: 6px; padding-left: 2px;
+  }
+
+  /* ── Post-Recommend Nudge ── */
+  .recommend-nudge {
+    display: none; padding: 10px 16px 12px;
+    animation: fadeSlideIn 0.3s ease;
+  }
+  .recommend-nudge.active { display: block; }
+  .recommend-nudge-inner {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: var(--red-light); border-radius: 10px;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .recommend-nudge-inner:hover { background: #FFE0E6; }
+  .recommend-nudge-icon { font-size: 18px; }
+  .recommend-nudge-text { flex: 1; font-size: 13px; font-weight: 600; color: var(--dark); }
+  .recommend-nudge-text span { color: var(--red); }
+  .recommend-nudge-arrow { color: var(--red); font-weight: 700; }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Quick Nom Success ── */
+  .quick-nom-success {
+    display: none; padding: 10px 14px;
+    background: #ECFDF5; border-radius: 10px;
+    font-size: 13px; color: #059669; font-weight: 600;
+    align-items: center; gap: 6px;
+    animation: fadeSlideIn 0.3s ease;
+  }
+  .quick-nom-success.active { display: flex; }
+
   .nominate-count {
     font-size: 12px; color: var(--red); font-weight: 600;
     display: flex; align-items: center; gap: 4px; margin-bottom: 8px;
@@ -784,8 +845,10 @@
       : '';
     const likes = randInt(5, 200);
     const comments = randInt(0, 40);
+    const cardId = 'card-' + Math.random().toString(36).slice(2, 8);
+    const catShort = d.category.split('/')[0].split('(')[0].trim();
     return `
-      <div class="favorite-card">
+      <div class="favorite-card" id="${cardId}" data-category="${esc(d.category)}" data-city="${esc(d.city)}" data-state="${esc(d.state)}">
         <div class="card-header">
           <div class="source-icon">⭐</div>
           <div class="source-info">
@@ -804,7 +867,22 @@
           <span>❤️ ${likes}</span>
           <span>💬 ${comments}</span>
           <span>↗️ Share</span>
-          <span class="recommend-btn" style="margin-left:auto" onclick="doRecommend(this)">👍 +1 Recommend</span>
+          <span class="recommend-btn" style="margin-left:auto" onclick="doRecommend(this, '${cardId}')">👍 +1 Recommend</span>
+        </div>
+        <div class="recommend-nudge" id="nudge-${cardId}">
+          <div class="recommend-nudge-inner" onclick="openFormFrom('${cardId}')">
+            <div class="recommend-nudge-icon">💡</div>
+            <div class="recommend-nudge-text">Know another great <span>${esc(catShort)}</span> in <span>${esc(d.city)}</span>?</div>
+            <div class="recommend-nudge-arrow">›</div>
+          </div>
+        </div>
+        <div class="quick-nom" id="qnom-${cardId}">
+          <div class="quick-nom-input-row">
+            <input class="quick-nom-input" placeholder="💡 I know a similar place..." onfocus="this.placeholder='Business name...'" onblur="this.placeholder='💡 I know a similar place...'" onkeydown="if(event.key==='Enter'){event.preventDefault();quickSubmit('${cardId}')}" oninput="toggleQuickSend('${cardId}')">
+            <button class="quick-nom-send" disabled onclick="quickSubmit('${cardId}')">→</button>
+          </div>
+          <div class="quick-nom-context">${emoji(d.category)} ${esc(catShort)} · ${esc(d.city)}, ${abbr(d.state)} · auto-filled</div>
+          <div class="quick-nom-success" id="qsuccess-${cardId}">✓ Nomination submitted! It will appear in the feed soon.</div>
         </div>
       </div>`;
   }
@@ -1277,10 +1355,81 @@
 
   modal.addEventListener('click', e => { if (e.target === modal) closeForm(); });
 
-  function doRecommend(el) {
+  function doRecommend(el, cardId) {
     el.classList.add('done');
     el.textContent = '✓ Recommended';
+    // Show nudge after recommend
+    if (cardId) {
+      const nudge = document.getElementById('nudge-' + cardId);
+      if (nudge) {
+        nudge.classList.add('active');
+        // Auto-focus the quick input
+        setTimeout(() => {
+          const input = document.querySelector('#qnom-' + cardId + ' .quick-nom-input');
+          if (input) input.focus();
+        }, 400);
+      }
+    }
     showToast('Thanks! Your recommendation counts.');
+  }
+
+  function toggleQuickSend(cardId) {
+    const input = document.querySelector('#qnom-' + cardId + ' .quick-nom-input');
+    const btn = document.querySelector('#qnom-' + cardId + ' .quick-nom-send');
+    btn.disabled = !input.value.trim();
+  }
+
+  function quickSubmit(cardId) {
+    const card = document.getElementById(cardId);
+    const input = document.querySelector('#qnom-' + cardId + ' .quick-nom-input');
+    const name = input.value.trim();
+    if (!name) return;
+
+    const category = card.dataset.category;
+    const city = card.dataset.city;
+    const state = card.dataset.state;
+
+    // Hide input row, show success
+    const inputRow = document.querySelector('#qnom-' + cardId + ' .quick-nom-input-row');
+    const context = document.querySelector('#qnom-' + cardId + ' .quick-nom-context');
+    const success = document.getElementById('qsuccess-' + cardId);
+    inputRow.style.display = 'none';
+    context.style.display = 'none';
+    success.classList.add('active');
+
+    // Hide nudge if visible
+    const nudge = document.getElementById('nudge-' + cardId);
+    if (nudge) nudge.classList.remove('active');
+
+    // Add cards to feeds
+    addCardToLocalFeed(name, category, 'Nominated via quick recommendation');
+    addCompactToForYouFeed(name, category, 'Nominated via quick recommendation');
+
+    showToast(`${name} nominated!`);
+  }
+
+  function openFormFrom(cardId) {
+    const card = document.getElementById(cardId);
+    const category = card.dataset.category;
+    const city = card.dataset.city;
+
+    openForm();
+
+    // Pre-fill category
+    const sel = document.getElementById('bizCategory');
+    for (let opt of sel.options) {
+      if (category.toLowerCase().includes(opt.value.toLowerCase().split('/')[0].split(' ')[0])) {
+        sel.value = opt.value;
+        break;
+      }
+    }
+
+    // Update location display
+    const locAuto = document.querySelector('.location-auto');
+    if (locAuto) {
+      const state = card.dataset.state;
+      locAuto.childNodes[2].textContent = ` Detected: ${city}, ${state} `;
+    }
   }
 
   // Quote expand/collapse
