@@ -685,17 +685,16 @@
 
   /* ── Feature Guide Panel ── */
   .feature-guide-toggle {
-    position: fixed; top: 12px; right: 12px; z-index: 200;
     background: var(--dark); color: var(--white); border: none;
-    padding: 7px 14px; border-radius: 20px; font-size: 12px;
-    font-weight: 600; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    display: flex; align-items: center; gap: 5px;
-    transition: background 0.2s;
+    padding: 5px 10px; border-radius: 14px; font-size: 11px;
+    font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; gap: 4px;
+    transition: background 0.2s; white-space: nowrap;
   }
   .feature-guide-toggle:hover { background: #333; }
   .feature-guide-toggle.active { background: var(--red); }
   .feature-guide-panel {
-    display: none; position: fixed; top: 44px; right: 12px; z-index: 200;
+    display: none; position: absolute; top: 100%; right: 0; margin-top: 6px; z-index: 200;
     background: var(--white); border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.15);
     width: 300px; max-height: 70vh; overflow-y: auto;
     border: 1px solid var(--border);
@@ -750,91 +749,6 @@
 </head>
 <body>
 
-<!-- Feature Guide Toggle Button -->
-<button class="feature-guide-toggle" id="guideToggleBtn" onclick="toggleFeatureGuide()">📋 Features</button>
-
-<!-- Feature Guide Panel -->
-<div class="feature-guide-panel" id="featureGuidePanel">
-  <div class="guide-panel-title">📋 Product Feature Guide</div>
-  <div class="guide-panel-sub">This demo showcases the Community Business Nomination product. Click any feature to jump to it.</div>
-
-  <div class="guide-section">
-    <div class="guide-section-title">Core Features</div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-cta')">
-      <div class="gf-icon" style="background:#FFF0F3">✨</div>
-      <div class="gf-text"><div class="gf-name">Nomination Entry</div><div class="gf-desc">CTA card to drive user nominations</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-stats')">
-      <div class="gf-icon" style="background:#F0FDF4">📊</div>
-      <div class="gf-text"><div class="gf-name">Social Proof Stats</div><div class="gf-desc">Nomination counts, cities, categories</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-card')">
-      <div class="gf-icon" style="background:#FFF7ED">⭐</div>
-      <div class="gf-text"><div class="gf-name">Community Favorite Card</div><div class="gf-desc">UGC nomination card with quote & actions</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-multi')">
-      <div class="gf-icon" style="background:#FDF2F8">🔥</div>
-      <div class="gf-text"><div class="gf-name">Multi-Nomination Merge</div><div class="gf-desc">Same business, multiple nominators with tab switch</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-ranking')">
-      <div class="gf-icon" style="background:#FFFBEB">🏆</div>
-      <div class="gf-text"><div class="gf-name">Local Rankings</div><div class="gf-desc">Top nominations by state</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-  </div>
-
-  <div class="guide-section">
-    <div class="guide-section-title">Long-term Expansion</div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-discovery')">
-      <div class="gf-icon" style="background:#F0F9FF">🔍</div>
-      <div class="gf-text"><div class="gf-name">Local Service Discovery</div><div class="gf-desc">Browse services by category</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-guide')">
-      <div class="gf-icon" style="background:#FFF7ED">📖</div>
-      <div class="gf-text"><div class="gf-name">Local Business Guide</div><div class="gf-desc">City top lists by state</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-  </div>
-
-  <div class="guide-section">
-    <div class="guide-section-title">Monetization</div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-promoted')">
-      <div class="gf-icon" style="background:#FFFBEB">⚡</div>
-      <div class="gf-text"><div class="gf-name">Promoted Listing</div><div class="gf-desc">Paid business placement in feed</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-claim')">
-      <div class="gf-icon" style="background:#F0FDF4">✓</div>
-      <div class="gf-text"><div class="gf-name">Business Claim</div><div class="gf-desc">Verified badge, analytics, promotion</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-ad')">
-      <div class="gf-icon" style="background:#F5F3FF">🏪</div>
-      <div class="gf-text"><div class="gf-name">Local Ads</div><div class="gf-desc">Sponsored ad units in feed</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-  </div>
-
-  <div class="guide-section">
-    <div class="guide-section-title">Growth Flywheel</div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-recommend')">
-      <div class="gf-icon" style="background:#FDF2F8">👍</div>
-      <div class="gf-text"><div class="gf-name">+1 Recommend & Nudge</div><div class="gf-desc">Drives new nominations from engaged users</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-    <div class="guide-feature-item" onclick="scrollToFeature('feat-quicknom')">
-      <div class="gf-icon" style="background:#FFF0F3">💡</div>
-      <div class="gf-text"><div class="gf-name">Quick Nominate</div><div class="gf-desc">Inline lightweight nomination input</div></div>
-      <div class="gf-arrow">›</div>
-    </div>
-  </div>
-</div>
-
 <!-- Status Bar -->
 <div class="status-bar">
   <span>9:41</span>
@@ -849,7 +763,37 @@
     <span onclick="switchTab('local')" id="tab-local" class="active">Local</span>
     <span>Following</span>
   </div>
-  <div class="avatar">👤</div>
+  <div style="position:relative">
+    <button class="feature-guide-toggle" id="guideToggleBtn" onclick="event.stopPropagation(); toggleFeatureGuide()">📋 Guide</button>
+    <div class="feature-guide-panel" id="featureGuidePanel">
+      <div class="guide-panel-title">📋 Product Feature Guide</div>
+      <div class="guide-panel-sub">Click any feature to jump to it in the feed.</div>
+      <div class="guide-section">
+        <div class="guide-section-title">Core Features</div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-cta')"><div class="gf-icon" style="background:#FFF0F3">✨</div><div class="gf-text"><div class="gf-name">Nomination Entry</div><div class="gf-desc">CTA card to drive nominations</div></div><div class="gf-arrow">›</div></div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-stats')"><div class="gf-icon" style="background:#F0FDF4">📊</div><div class="gf-text"><div class="gf-name">Social Proof Stats</div><div class="gf-desc">Counts, cities, categories</div></div><div class="gf-arrow">›</div></div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-card')"><div class="gf-icon" style="background:#FFF7ED">⭐</div><div class="gf-text"><div class="gf-name">Community Favorite Card</div><div class="gf-desc">UGC nomination card</div></div><div class="gf-arrow">›</div></div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-multi')"><div class="gf-icon" style="background:#FDF2F8">🔥</div><div class="gf-text"><div class="gf-name">Multi-Nomination Merge</div><div class="gf-desc">Same business, tab switch</div></div><div class="gf-arrow">›</div></div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-ranking')"><div class="gf-icon" style="background:#FFFBEB">🏆</div><div class="gf-text"><div class="gf-name">Local Rankings</div><div class="gf-desc">Top nominations by state</div></div><div class="gf-arrow">›</div></div>
+      </div>
+      <div class="guide-section">
+        <div class="guide-section-title">Long-term Expansion</div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-discovery')"><div class="gf-icon" style="background:#F0F9FF">🔍</div><div class="gf-text"><div class="gf-name">Service Discovery</div><div class="gf-desc">Browse by category</div></div><div class="gf-arrow">›</div></div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-guide')"><div class="gf-icon" style="background:#FFF7ED">📖</div><div class="gf-text"><div class="gf-name">Business Guide</div><div class="gf-desc">City top lists</div></div><div class="gf-arrow">›</div></div>
+      </div>
+      <div class="guide-section">
+        <div class="guide-section-title">Monetization</div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-promoted')"><div class="gf-icon" style="background:#FFFBEB">⚡</div><div class="gf-text"><div class="gf-name">Promoted Listing</div><div class="gf-desc">Paid placement in feed</div></div><div class="gf-arrow">›</div></div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-claim')"><div class="gf-icon" style="background:#F0FDF4">✓</div><div class="gf-text"><div class="gf-name">Business Claim</div><div class="gf-desc">Verified badge & promotion</div></div><div class="gf-arrow">›</div></div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-ad')"><div class="gf-icon" style="background:#F5F3FF">🏪</div><div class="gf-text"><div class="gf-name">Local Ads</div><div class="gf-desc">Sponsored ad units</div></div><div class="gf-arrow">›</div></div>
+      </div>
+      <div class="guide-section">
+        <div class="guide-section-title">Growth Flywheel</div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-recommend')"><div class="gf-icon" style="background:#FDF2F8">👍</div><div class="gf-text"><div class="gf-name">+1 Recommend & Nudge</div><div class="gf-desc">Drives new nominations</div></div><div class="gf-arrow">›</div></div>
+        <div class="guide-feature-item" onclick="scrollToFeature('feat-quicknom')"><div class="gf-icon" style="background:#FFF0F3">💡</div><div class="gf-text"><div class="gf-name">Quick Nominate</div><div class="gf-desc">Inline lightweight input</div></div><div class="gf-arrow">›</div></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Feed Container -->
