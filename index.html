@@ -185,71 +185,36 @@
     font-size: 12px; color: var(--red); font-weight: 600;
     display: flex; align-items: center; gap: 4px; margin-bottom: 8px;
   }
+  .nominated-by {
+    font-size: 11px; color: var(--gray); margin-bottom: 6px; font-style: italic;
+  }
 
-  /* ── News Card (NewsBreak-style) ── */
+  /* ── News Card (For You feed filler) ── */
   .news-card {
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
   }
-  .news-card .news-source {
-    display: flex; align-items: center; gap: 8px;
-    padding: 12px 16px 0;
-  }
-  .news-card .news-source-icon {
-    width: 20px; height: 20px; border-radius: 50%;
-    background: var(--gray-light); display: flex; align-items: center; justify-content: center;
-    font-size: 11px; flex-shrink: 0;
-  }
-  .news-card .news-source-name {
-    font-size: 12px; color: var(--gray); font-weight: 500;
-  }
-  .news-card .news-source-name .dot { margin: 0 4px; }
-  .news-card .news-body { display: flex; gap: 12px; padding: 8px 16px 4px; }
-  .news-card .news-text { flex: 1; min-width: 0; }
-  .news-card .news-title {
-    font-size: 16px; font-weight: 700; line-height: 1.45;
-    margin-bottom: 6px;
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-    color: var(--dark);
-  }
-  .news-card .news-snippet {
-    font-size: 13px; color: #555; line-height: 1.5;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    margin-bottom: 6px;
-  }
-  .news-card .news-meta {
-    font-size: 11px; color: #999; display: flex; align-items: center; gap: 4px;
-  }
-  .news-card .news-meta .dot { width: 2px; height: 2px; border-radius: 50%; background: #bbb; }
+  .news-card .news-body { display: flex; gap: 12px; padding: 14px 16px; }
+  .news-card .news-text { flex: 1; }
+  .news-card .news-title { font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .news-card .news-meta { font-size: 11px; color: var(--gray); display: flex; align-items: center; gap: 6px; }
+  .news-card .news-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--gray); }
   .news-card .news-thumb {
-    width: 110px; height: 80px; border-radius: 6px;
+    width: 100px; height: 74px; border-radius: 8px;
     background: var(--border); flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     font-size: 28px; color: #ccc;
-    object-fit: cover;
   }
-  .news-card .news-actions {
-    display: flex; align-items: center; gap: 20px;
-    padding: 6px 16px 12px; font-size: 12px; color: #999;
+  .news-card .news-stats {
+    display: flex; gap: 16px; padding: 8px 16px 12px; font-size: 11px; color: var(--gray);
   }
-  .news-card .news-actions span {
-    display: flex; align-items: center; gap: 4px; cursor: pointer;
-  }
-  .news-card .news-actions span:hover { color: var(--dark); }
-  .news-card .news-actions .action-more {
-    margin-left: auto; font-size: 16px; letter-spacing: 2px; cursor: pointer;
-  }
-
-  /* ── News Card with image banner (hero style) ── */
   .news-card .news-banner {
-    width: 100%; height: 200px; background: var(--border);
+    width: 100%; height: 180px; background: var(--border);
     display: flex; align-items: center; justify-content: center;
     font-size: 48px; color: #ccc;
   }
-  .news-card .news-banner-body { padding: 10px 16px 4px; }
+  .news-card .news-banner-body { padding: 14px 16px; }
   .news-card .news-banner-body .news-title { margin-bottom: 6px; }
-  .news-card .news-banner-body .news-snippet { margin-bottom: 4px; }
 
   /* ── Trending Bar ── */
   .trending-bar {
@@ -335,6 +300,16 @@
     margin-left: auto; font-size: 10px; color: #aaa; cursor: default;
   }
   .compact-footer .sponsored-label:hover { color: #aaa; }
+
+  /* ── Stats Bar ── */
+  .stats-bar {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 16px;
+    display: flex; justify-content: space-around; text-align: center;
+  }
+  .stats-bar .stat-item {}
+  .stats-bar .stat-num { font-size: 22px; font-weight: 800; color: var(--red); }
+  .stats-bar .stat-label { font-size: 11px; color: var(--gray); margin-top: 2px; }
 
   /* ── Modal Overlay ── */
   .modal-overlay {
@@ -433,12 +408,6 @@
     transition: opacity 0.3s; pointer-events: none; white-space: nowrap;
   }
   .toast.show { opacity: 1; }
-
-  /* ── Tab indicator animation ── */
-  .tab-indicator {
-    position: absolute; bottom: 0; height: 2px; background: var(--red);
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s;
-  }
 </style>
 </head>
 <body>
@@ -463,351 +432,8 @@
 <!-- Feed Container -->
 <div class="feed-container">
   <div class="feed-slider at-local" id="feedSlider">
-
-    <!-- ════════════════════════════════════ -->
-    <!-- FOR YOU FEED                         -->
-    <!-- ════════════════════════════════════ -->
-    <div class="feed" id="feed-foryou">
-
-      <!-- News 1: banner style -->
-      <div class="news-card">
-        <div class="news-source">
-          <div class="news-source-icon">📰</div>
-          <div class="news-source-name">Tucson Daily Star <span class="dot">·</span> Tucson, AZ</div>
-        </div>
-        <div class="news-banner">🏙️</div>
-        <div class="news-banner-body">
-          <div class="news-title">City Council Approves $2.3M Grant for Downtown Small Business Recovery Program</div>
-          <div class="news-snippet">The Tucson City Council voted unanimously to allocate $2.3 million in federal recovery funds to support downtown small businesses affected by economic slowdowns.</div>
-          <div class="news-meta">
-            <span>3h ago</span>
-            <span class="dot"></span>
-            <span>1.2k reads</span>
-          </div>
-        </div>
-        <div class="news-actions">
-          <span>💬 56</span>
-          <span>↗️ Share</span>
-          <span class="action-more">···</span>
-        </div>
-      </div>
-
-      <!-- Trending -->
-      <div class="trending-bar">
-        <div class="trending-label">🔥 Trending in Arizona</div>
-        <div class="trending-item">
-          <span class="trending-num">1</span>
-          <span class="trending-text">Summer heat wave forecast</span>
-          <span class="trending-tag">· Weather</span>
-        </div>
-        <div class="trending-item">
-          <span class="trending-num">2</span>
-          <span class="trending-text">Local businesses nominated by community</span>
-          <span class="trending-tag">· Community</span>
-        </div>
-        <div class="trending-item">
-          <span class="trending-num">3</span>
-          <span class="trending-text">I-10 construction update</span>
-          <span class="trending-tag">· Traffic</span>
-        </div>
-      </div>
-
-      <!-- News 2 -->
-      <div class="news-card">
-        <div class="news-source">
-          <div class="news-source-icon">📰</div>
-          <div class="news-source-name">Arizona Republic</div>
-        </div>
-        <div class="news-body">
-          <div class="news-text">
-            <div class="news-title">Tucson Named One of the Best Cities for Food Lovers in 2026</div>
-            <div class="news-snippet">UNESCO's City of Gastronomy continues to shine as national food critics highlight Tucson's unique Sonoran cuisine and thriving local restaurant scene.</div>
-            <div class="news-meta">
-              <span>5h ago</span>
-              <span class="dot"></span>
-              <span>342 reads</span>
-            </div>
-          </div>
-          <div class="news-thumb">🍜</div>
-        </div>
-        <div class="news-actions">
-          <span>💬 56</span>
-          <span>↗️ Share</span>
-          <span class="action-more">···</span>
-        </div>
-      </div>
-
-      <!-- ★ Compact Nomination Card (organic insert in For You) -->
-      <div class="favorite-compact">
-        <div class="compact-tag">⭐ Community Favorite · Tucson</div>
-        <div class="compact-body">
-          <div class="compact-title">
-            Tumerico
-            <span class="badge-icon">🏆 Top Pick</span>
-          </div>
-          <div class="compact-sub">🍽️ Restaurant · Plant-Based · 23 nominations</div>
-          <div class="compact-quote">"A must-try for anyone looking for healthy, flavorful plant-based Mexican food. A hidden gem that brings the community together."</div>
-        </div>
-        <div class="compact-footer">
-          <span>❤️ 186</span>
-          <span>💬 42</span>
-          <span>↗️ Share</span>
-          <span class="sponsored-label">Based on your location</span>
-        </div>
-      </div>
-
-      <!-- News 3 -->
-      <div class="news-card">
-        <div class="news-source">
-          <div class="news-source-icon">📺</div>
-          <div class="news-source-name">KVOA News <span class="dot">·</span> Tucson, AZ</div>
-        </div>
-        <div class="news-body">
-          <div class="news-text">
-            <div class="news-title">New Bike Lane Network Connects University District to Downtown Corridor</div>
-            <div class="news-snippet">The $4.2M protected bike lane project aims to make cycling safer for UA students and downtown commuters with separated paths along 4th Avenue.</div>
-            <div class="news-meta">
-              <span>6h ago</span>
-              <span class="dot"></span>
-              <span>128 reads</span>
-            </div>
-          </div>
-          <div class="news-thumb">🚲</div>
-        </div>
-        <div class="news-actions">
-          <span>💬 34</span>
-          <span>↗️ Share</span>
-          <span class="action-more">···</span>
-        </div>
-      </div>
-
-      <!-- ★ Inline CTA (small, native-feeling) -->
-      <div class="cta-inline" onclick="openForm()">
-        <div class="cta-inline-icon">📝</div>
-        <div class="cta-inline-body">
-          <div class="cta-inline-title">Know a great local business?</div>
-          <div class="cta-inline-sub">Nominate them for the Community Spotlight</div>
-        </div>
-        <div class="cta-inline-arrow">›</div>
-      </div>
-
-      <!-- News 4 -->
-      <div class="news-card">
-        <div class="news-source">
-          <div class="news-source-icon">📰</div>
-          <div class="news-source-name">Tucson Weekly</div>
-        </div>
-        <div class="news-body">
-          <div class="news-text">
-            <div class="news-title">Pima County Library System Launches Free Small Business Workshop Series</div>
-            <div class="news-snippet">Free 6-week workshop covers business plans, marketing, and funding for aspiring entrepreneurs. Registration opens next Monday at all branches.</div>
-            <div class="news-meta">
-              <span>8h ago</span>
-              <span class="dot"></span>
-              <span>87 reads</span>
-            </div>
-          </div>
-          <div class="news-thumb">📚</div>
-        </div>
-        <div class="news-actions">
-          <span>💬 12</span>
-          <span>↗️ Share</span>
-          <span class="action-more">···</span>
-        </div>
-      </div>
-
-      <!-- ★ Another compact nomination (different city, algorithmic recommendation) -->
-      <div class="favorite-compact">
-        <div class="compact-tag">⭐ Community Favorite · Mountain View, CA</div>
-        <div class="compact-body">
-          <div class="compact-title">Dana Street Roasting Co.</div>
-          <div class="compact-sub">☕ Coffee Shop · Roastery · 9 nominations</div>
-          <div class="compact-quote">"The best coffee shop in the Bay Area. They roast their own beans and the staff treats you like family."</div>
-        </div>
-        <div class="compact-footer">
-          <span>❤️ 97</span>
-          <span>💬 18</span>
-          <span>↗️ Share</span>
-          <span class="sponsored-label">Popular near you</span>
-        </div>
-      </div>
-
-      <!-- News 5 banner -->
-      <div class="news-card">
-        <div class="news-source">
-          <div class="news-source-icon">📰</div>
-          <div class="news-source-name">AZ Central <span class="dot">·</span> Arizona</div>
-        </div>
-        <div class="news-banner">🌵</div>
-        <div class="news-banner-body">
-          <div class="news-title">Saguaro National Park Breaks Visitor Record: Tips for Beating the Crowds</div>
-          <div class="news-snippet">Over 1.2 million visitors flocked to Saguaro National Park last year. Rangers share their best tips for avoiding peak hours and finding hidden trails.</div>
-          <div class="news-meta">
-            <span>10h ago</span>
-            <span class="dot"></span>
-            <span>3.4k reads</span>
-          </div>
-        </div>
-        <div class="news-actions">
-          <span>💬 89</span>
-          <span>↗️ Share</span>
-          <span class="action-more">···</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ════════════════════════════════════ -->
-    <!-- LOCAL FEED                           -->
-    <!-- ════════════════════════════════════ -->
-    <div class="feed" id="feed-local">
-
-      <!-- Big CTA -->
-      <div class="cta-card" onclick="openForm()">
-        <div class="cta-badge">✨ Community Spotlight</div>
-        <h2>Nominate Your Favorite Local Business</h2>
-        <p>Tell us about a business that makes your community special. They could be featured to millions of local readers!</p>
-        <button class="cta-btn" onclick="event.stopPropagation(); openForm()">Nominate Now →</button>
-        <div class="social-proof">🔥 1,247 nominations this week in Tucson</div>
-      </div>
-
-      <!-- Community Favorite Card 1 (full) -->
-      <div class="favorite-card">
-        <div class="card-header">
-          <div class="source-icon">⭐</div>
-          <div class="source-info">
-            <div class="source-name">Community Favorite</div>
-            <div class="source-meta">Tucson, AZ · Nominated by locals</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="nominate-count">❤️ 23 people nominated this business</div>
-          <div class="biz-name">
-            Tumerico
-            <span class="badge-icon">🏆 Top Pick</span>
-          </div>
-          <div class="biz-category">🍽️ Restaurant · Plant-Based · Mexican Fusion</div>
-          <div class="biz-quote">"Tumerico is a must-try for anyone looking for healthy, flavorful plant-based Mexican food. It's a hidden gem that brings the community together with affordable, delicious meals."</div>
-          <div class="biz-location">📍 Tucson, Arizona</div>
-        </div>
-        <div class="card-stats">
-          <span>❤️ 186</span>
-          <span>💬 42</span>
-          <span>↗️ Share</span>
-          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
-        </div>
-      </div>
-
-      <!-- Rankings -->
-      <div class="rankings-card">
-        <div class="rankings-header">
-          🏆 Top Local Businesses · Tucson
-          <span class="see-all">See All →</span>
-        </div>
-        <div class="rank-item">
-          <div class="rank-num">1</div>
-          <div class="rank-info"><div class="rank-name">Tumerico</div><div class="rank-meta">Restaurant · Plant-Based</div></div>
-          <div class="rank-votes">23 votes</div>
-        </div>
-        <div class="rank-item">
-          <div class="rank-num">2</div>
-          <div class="rank-info"><div class="rank-name">Barrio Bread</div><div class="rank-meta">Bakery · Artisan</div></div>
-          <div class="rank-votes">18 votes</div>
-        </div>
-        <div class="rank-item">
-          <div class="rank-num">3</div>
-          <div class="rank-info"><div class="rank-name">Exo Roast Co.</div><div class="rank-meta">Coffee Shop</div></div>
-          <div class="rank-votes">15 votes</div>
-        </div>
-        <div class="rank-item">
-          <div class="rank-num">4</div>
-          <div class="rank-info"><div class="rank-name">Seis Kitchen</div><div class="rank-meta">Restaurant · Mexican</div></div>
-          <div class="rank-votes">12 votes</div>
-        </div>
-        <div class="rank-item">
-          <div class="rank-num">5</div>
-          <div class="rank-info"><div class="rank-name">Antigone Books</div><div class="rank-meta">Bookstore · Independent</div></div>
-          <div class="rank-votes">10 votes</div>
-        </div>
-      </div>
-
-      <!-- Community Favorite Card 2 -->
-      <div class="favorite-card">
-        <div class="card-header">
-          <div class="source-icon">⭐</div>
-          <div class="source-info">
-            <div class="source-name">Community Favorite</div>
-            <div class="source-meta">Tucson, AZ · Nominated by locals</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="nominate-count">❤️ 18 people nominated this business</div>
-          <div class="biz-name">Barrio Bread</div>
-          <div class="biz-category">🥖 Bakery · Artisan · Sourdough</div>
-          <div class="biz-quote">"Don Guerrra's bread is incredible — he uses heritage grains from local farms. The line on Saturday mornings is worth every minute. True Tucson treasure."</div>
-          <div class="biz-location">📍 Tucson, Arizona</div>
-        </div>
-        <div class="card-stats">
-          <span>❤️ 154</span>
-          <span>💬 38</span>
-          <span>↗️ Share</span>
-          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
-        </div>
-      </div>
-
-      <!-- Section: Newly Nominated -->
-      <div class="section-divider">🆕 Recently Nominated</div>
-
-      <!-- Community Favorite Card 3 -->
-      <div class="favorite-card">
-        <div class="card-header">
-          <div class="source-icon">⭐</div>
-          <div class="source-info">
-            <div class="source-name">Community Favorite</div>
-            <div class="source-meta">Tucson, AZ · 2h ago</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="nominate-count">❤️ 3 people nominated this business</div>
-          <div class="biz-name">Sparkroot</div>
-          <div class="biz-category">🧘 Health / Wellness · Holistic Center</div>
-          <div class="biz-quote">"Sparkroot changed my approach to health. Their acupuncture and community classes are affordable and genuinely healing. It's wellness for real people."</div>
-          <div class="biz-location">📍 Tucson, Arizona</div>
-        </div>
-        <div class="card-stats">
-          <span>❤️ 24</span>
-          <span>💬 5</span>
-          <span>↗️ Share</span>
-          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
-        </div>
-      </div>
-
-      <!-- Community Favorite Card 4 -->
-      <div class="favorite-card">
-        <div class="card-header">
-          <div class="source-icon">⭐</div>
-          <div class="source-info">
-            <div class="source-name">Community Favorite</div>
-            <div class="source-meta">Tucson, AZ · 4h ago</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="nominate-count">❤️ 1 person nominated this business</div>
-          <div class="biz-name">Pop Cycle</div>
-          <div class="biz-category">🎨 Retail · Gift Shop · Local Art</div>
-          <div class="biz-quote">"The best shop for unique local gifts! Everything is made by Arizona artists. Friendly staff and you always find something you didn't know you needed."</div>
-          <div class="biz-location">📍 Tucson, Arizona</div>
-        </div>
-        <div class="card-stats">
-          <span>❤️ 11</span>
-          <span>💬 2</span>
-          <span>↗️ Share</span>
-          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
-        </div>
-      </div>
-
-    </div>
-
+    <div class="feed" id="feed-foryou"></div>
+    <div class="feed" id="feed-local"></div>
   </div>
 </div>
 
@@ -883,38 +509,329 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // ══════════════════════════════════════
+  // Survey data (from pilot, privacy-sanitized: no emails)
+  // Only entries with valid business name + story
+  // ══════════════════════════════════════
+  const surveyData = [
+    { name: "Mals Bake House", city: "Carmi", state: "Illinois", category: "Restaurant/Food Service", story: "From Carmi and has a trash for baking the best sweets", rating: 5, nominator: "Nancy R." },
+    { name: "Adriana's", city: "Saint Louis", state: "Missouri", category: "Restaurant/Food Service", story: "Family run, best sandwiches in town, friendly, unpretentious staff.", rating: 5, nominator: "David M." },
+    { name: "Salon Aer", city: "Atascadero", state: "California", category: "Service", story: "Kind personal service bring smiles and refreshment to people. These days it really matters. It's real", rating: 5, nominator: "Naomi" },
+    { name: "Ghini's French Caffe", city: "Tucson", state: "Arizona", category: "Restaurant/Food Service", story: "Not only does Ghini's offer great food (along with her father's bakery), but Chef Coralie is very involved in the local community & supports other local restaurants & businesses.", rating: 5, nominator: "AJ F." },
+    { name: "Teds Pizza", city: "Menomonie", state: "Wisconsin", category: "Restaurant/Food Service", story: "Same great food at a low price for over 50yrs", rating: 5, nominator: "Tim D." },
+    { name: "Dr. Maggi Smith Podiatrist", city: "Toledo", state: "Ohio", category: "Health & Wellness", story: "Unlike any doctor I have ever had, she explains takes time and does not make you feel like a burden always smiling, always cheerful. And I just wish every doctor could have her attitude about care for their patients.", rating: 5, nominator: "Elaine P." },
+    { name: "Pfeifer Studio", city: "Bernalillo", state: "New Mexico", category: "Other", story: "Unique handcrafted furniture manufactured locally and sold worldwide.", rating: 5, nominator: "Thomas W." },
+    { name: "The Cypress Company", city: "Crescent City", state: "California", category: "Retail/Boutique", story: "Making old new again", rating: 5 },
+    { name: "Northspur Brewery", city: "Willits", state: "California", category: "Other", story: "They are an awesome brewery/meeting place in town. They serve great food with amazing beverages", rating: 5, nominator: "Gina S." },
+    { name: "Iron Pot", city: "Kent", state: "Washington", category: "Restaurant/Food Service", story: "Family business - Owner is always so polite and friendly! Food always delish!", rating: 5, nominator: "McCormick" },
+    { name: "Jimmies Restaurant", city: "Cleburne", state: "Texas", category: "Restaurant/Food Service", story: "Small, intimate venue. Chef owned. Delicious meals and cocktails.", rating: 5 },
+    { name: "Little Venice Restaurant", city: "Binghamton", state: "New York", category: "Restaurant/Food Service", story: "Excellent food, great service", rating: 5, nominator: "Kenneth D." },
+    { name: "Ben's Super Center", city: "Brown City", state: "Michigan", category: "Other", story: "Community impact clean and well stocked store with helpful, informative and friendly employees", rating: 5, nominator: "Donna B." },
+    { name: "Magpie Mercantile", city: "Bertram", state: "Texas", category: "Other", story: "Support of local farmers, and unique quality health products", rating: 5, nominator: "Sharon M." },
+    { name: "Tillander Contracting", city: "Butler", state: "Pennsylvania", category: "Other", story: "They do their work to be the best", rating: 5, nominator: "Marsha T." },
+    { name: "Moot Meat", city: "Mount Prospect", state: "Illinois", category: "Restaurant/Food Service", story: "Great smoked meats and love the side of garlic. Great customer service as well. You cannot beat that.", rating: 5, nominator: "Leticia B." },
+    { name: "Kary Environmental Services", city: "Mesa", state: "Arizona", category: "Other", story: "They are a family owned and operated small business, serving the environmental needs of most of Arizona since 1985. They handle environmental situations, biohazard situations, crime scene clean ups, and they now have a construction and demolition division as well!! Not to mention all their charitable efforts for almost every community across the State of Arizona!!", rating: 5, nominator: "Kelley M." },
+    { name: "Hardknox Rocks & Excavating", city: "Apache Junction", state: "Arizona", category: "Other", story: "They are family owned and operated. They take pride in there work. Seeing customer's happy and smiles on there faces shows that the job is well done. They do an excellent job small or big.", rating: 5, nominator: "Laurie K." },
+    { name: "Charlotte's Collection", city: "Juneau", state: "Alaska", category: "Other", story: "Because the owner is a handicapped woman who writes and sells her books. She's an advocate for homeless pregnant women as well", nominator: "Martin S." },
+    { name: "The Purple Onion", city: "Cabot", state: "Arkansas", category: "Restaurant/Food Service", story: "Great food, fantastic service and personal attention to our needs that makes us feel wanted", nominator: "Mary Eileen P." },
+    { name: "Leekam", city: "Kula", state: "Hawaii", category: "Restaurant/Food Service", story: "Serving community and the school in this community, with local favorites", nominator: "Toni A." },
+    { name: "Adams Bar and Grill", city: "St. Joseph", state: "Missouri", category: "Restaurant/Food Service", story: "Good food, friendly atmosphere", nominator: "Hedy" },
+    { name: "Nena's Restaurant", city: "Stockton", state: "California", category: "Restaurant/Food Service", story: "Flour tortillas", nominator: "Vickie L." },
+    { name: "Hummingbird Restaurant", city: "Wilmington", state: "Delaware", category: "Restaurant/Food Service", story: "Exceptional take out service exceptional service, and the community caters to community.", nominator: "Ernestine J." },
+    { name: "Ochsner Novant Health 65+", city: "Savannah", state: "Georgia", category: "Health & Wellness", story: "They are all the above: Exceptional service and community impact, Care by the best Dr's and on time apps and most of all the inspiration they give to seniors. Drs are very loving and kind.", nominator: "Alicia S." },
+    { name: "Pro Real Estate", city: "Nuevo/Perris", state: "California", category: "Other", story: "They're not business just to sale houses it seems they have an open door policy to help the public when in need. From letting people come escape the heat on hot summer days to helping collect items for needy families and even lost pets.", nominator: "Anonymous" },
+    { name: "Anita's", city: "Oceanside", state: "California", category: "Restaurant/Food Service", story: "Excellent and professional and friendly staff and food", nominator: "Maria R." },
+    { name: "Ginny's Gems", city: "Beaufort", state: "South Carolina", category: "Other", story: "Small but powerful gift for the loved ones in your life. Unique findings at an affordable price." },
+    { name: "ITS Taste of India", city: "Palm Springs", state: "California", category: "Restaurant/Food Service", story: "Authentic Indian flavors", nominator: "Vic" },
+    { name: "Bebber", city: "Taylorsville", state: "North Carolina", category: "Restaurant/Food Service", story: "Very friendly. The owner can remember your name after meeting you one time and everything you tell him. If you are low on money he will let you owe him for a week or two. He always greets you like you and him have been friends forever. Bebbers has got the best milk shakes in my opinion.", nominator: "Wanda B." },
+    { name: "Carlson Drug", city: "Ortonville", state: "Minnesota", category: "Health & Wellness", story: "As it turns out my husband went to school with Mike the owner, they played hockey together as kids. They know all their customers and are very welcoming to all. I trust Mike with any questions about new medicines.", nominator: "Shari F." },
+    { name: "Dress Culture", city: "Bloomington", state: "Illinois", category: "Retail/Boutique", story: "This is a young girl's dream come true. Her love of fashion. Her love of making others happy. Giving back to the community that has given her so much. Providing stunning Prom dresses and fashion for all occasions.", nominator: "Cheryl D." },
+    { name: "Chen's Chinese Bistro", city: "Gold Canyon", state: "Arizona", category: "Restaurant/Food Service", story: "Have been a patron for years, food is always consistent in flavor, service is great!!", nominator: "Beverly L." },
+    { name: "Triad Pain Management", city: "Gold Canyon", state: "Arizona", category: "Health & Wellness", story: "Incredible Staff!! Feel like you are family. The staff is exceptional and they listen", nominator: "Beverly L." },
+    { name: "Perogues Restaurant", city: "Bismarck", state: "North Dakota", category: "Restaurant/Food Service", story: "Fine dining with great service that serves unique and varied food items. Friendly staff and proprietors.", nominator: "Irish L." },
+    { name: "El Extapia", city: "Medical Lake", state: "Washington", category: "Restaurant/Food Service", story: "My very first choice to dine out. Great food, best Mexican I have had in all my travels. Great service. Flavorful and fresh. All the locals love it. Their prices are excellent for what you get and portion sizes are generous.", nominator: "Sheree" },
+    { name: "Ola's Southern Cuisine", city: "Knoxville", state: "Tennessee", category: "Restaurant/Food Service", story: "The food is incredible. The owner Chef Blacc and his sweet wife go out of their way to make sure each experience will leave you smiling because your taste buds are applauding.", nominator: "Felicia W." },
+    { name: "Bakersfield", city: "Detroit", state: "Michigan", category: "Restaurant/Food Service", story: "My daughter works there and it's a fun little place to chat and snack", nominator: "Tracy B." },
+    { name: "CO Deli", city: "Palatka", state: "Florida", category: "Restaurant/Food Service", story: "The best food and greatest serving staff!", nominator: "Michael B." },
+    { name: "Gastank MMA & Fitness", city: "North Vernon", state: "Indiana", category: "Health & Wellness", story: "We are a small town and it is very much beneficial to everyone especially kids. He teaches wrestling and jujutsu and fitness", nominator: "Dennis M." },
+    { name: "Health and Nutrition Plus", city: "Sterling", state: "Illinois", category: "Health & Wellness", story: "Helping people with educated information, kind and caring staff. Grateful they are in our community.", nominator: "Jazlynn M." },
+    { name: "Lucky Do's", city: "Redding", state: "California", category: "Service", story: "The best local groomers!! They groom every kind of fur baby and they truly love what they do. They are kind, gentle and patient with your fur baby. And the fur babies love them too!", nominator: "Kimberly W." },
+    { name: "DA Beats Audio", city: "Muskogee", state: "Oklahoma", category: "Service", story: "Fantastic personalized service! He has a 5 star rating. He answered phone calls, greeted his walk-ins as he performed his audio work! A very busy young man! His audio work certainly reflected his 5 Star rating!", nominator: "Jeff F." },
+    { name: "Dlua on the River", city: "Davenport", state: "Iowa", category: "Restaurant/Food Service", story: "This restaurant serves high quality Mexican food with many unique recipes along with a fusion of breakfast items served all day. It also happens to have the best view/atmosphere in the whole Quad Cities.", nominator: "Robert" },
+    { name: "Helping Homes Exteriors", city: "West Carrollton", state: "Ohio", category: "Home Services/Contractor", story: "We are a veteran owned and operated local business committed to providing our community with the best products the best installers and the best prices", nominator: "Amie P." },
+    { name: "Rickey Staley Painting", city: "Wilkes County", state: "North Carolina", category: "Home Services/Contractor", story: "Awesome work and people", nominator: "Rickey S." },
+    { name: "Wayne Edwards Auto", city: "Lake Village", state: "Arkansas", category: "Service", story: "The owner's hard work helped me and many others also teaching life lessons and being active in the community and churches.", nominator: "Eric T." },
+  ];
+
+  // ── Category emoji map ──
+  const catEmoji = {
+    'Restaurant/Food Service': '🍽️',
+    'Health & Wellness': '🧘',
+    'Retail/Boutique': '🛍️',
+    'Service': '✂️',
+    'Home Services/Contractor': '🔧',
+    'Other': '📦',
+  };
+
+  // ── State abbreviations ──
+  const stateAbbr = {
+    'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+    'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
+    'Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS',
+    'Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA',
+    'Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT',
+    'Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM',
+    'New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK',
+    'Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC',
+    'South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT',
+    'Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY',
+  };
+
+  function abbr(state) { return stateAbbr[state] || state; }
+  function emoji(cat) { return catEmoji[cat] || '📦'; }
+  function esc(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+  function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+  // ── Build state-based rankings ──
+  function getStateCounts() {
+    const counts = {};
+    surveyData.forEach(d => {
+      const key = d.state;
+      if (!counts[key]) counts[key] = [];
+      counts[key].push(d);
+    });
+    return counts;
+  }
+
+  // ── Generate full card HTML ──
+  function fullCardHTML(d, timeLabel) {
+    const nominatorLine = d.nominator
+      ? `<div class="nominated-by">Nominated by ${esc(d.nominator)}</div>`
+      : '';
+    const likes = randInt(5, 200);
+    const comments = randInt(0, 40);
+    return `
+      <div class="favorite-card">
+        <div class="card-header">
+          <div class="source-icon">⭐</div>
+          <div class="source-info">
+            <div class="source-name">Community Favorite</div>
+            <div class="source-meta">${esc(d.city)}, ${abbr(d.state)} · ${timeLabel}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          ${nominatorLine}
+          <div class="biz-name">${esc(d.name)}</div>
+          <div class="biz-category">${emoji(d.category)} ${esc(d.category)}</div>
+          <div class="biz-quote">"${esc(d.story)}"</div>
+          <div class="biz-location">📍 ${esc(d.city)}, ${esc(d.state)}</div>
+        </div>
+        <div class="card-stats">
+          <span>❤️ ${likes}</span>
+          <span>💬 ${comments}</span>
+          <span>↗️ Share</span>
+          <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
+        </div>
+      </div>`;
+  }
+
+  // ── Generate compact card HTML ──
+  function compactCardHTML(d, label) {
+    const likes = randInt(5, 150);
+    const comments = randInt(0, 25);
+    return `
+      <div class="favorite-compact">
+        <div class="compact-tag">⭐ Community Favorite · ${esc(d.city)}, ${abbr(d.state)}</div>
+        <div class="compact-body">
+          <div class="compact-title">${esc(d.name)}</div>
+          <div class="compact-sub">${emoji(d.category)} ${esc(d.category)}</div>
+          <div class="compact-quote">"${esc(d.story)}"</div>
+        </div>
+        <div class="compact-footer">
+          <span>❤️ ${likes}</span>
+          <span>💬 ${comments}</span>
+          <span>↗️ Share</span>
+          <span class="sponsored-label">${label}</span>
+        </div>
+      </div>`;
+  }
+
+  // ── News cards for For You feed ──
+  const newsCards = [
+    { title: "City Council Approves $2.3M Grant for Downtown Small Business Recovery Program", icon: "🏙️", src: "Tucson Daily Star", time: "3h ago", reads: "1.2k", banner: true },
+    { title: "Tucson Named One of the Best Cities for Food Lovers in 2026", icon: "🍜", src: "Arizona Republic", time: "5h ago" },
+    { title: "New Bike Lane Network Connects University District to Downtown Corridor", icon: "🚲", src: "KVOA News", time: "6h ago" },
+    { title: "Pima County Library System Launches Free Small Business Workshop Series", icon: "📚", src: "Tucson Weekly", time: "8h ago" },
+    { title: "Saguaro National Park Breaks Visitor Record: Tips for Beating the Crowds", icon: "🌵", src: "AZ Central", time: "10h ago", reads: "3.4k", banner: true },
+    { title: "Local Restaurant Owners Say Community Nominations Boosted Their Visibility", icon: "📰", src: "NewsBreak Local", time: "12h ago" },
+  ];
+
+  function newsCardHTML(n) {
+    if (n.banner) {
+      return `<div class="news-card">
+        <div class="news-banner">${n.icon}</div>
+        <div class="news-banner-body">
+          <div class="news-title">${esc(n.title)}</div>
+          <div class="news-meta">
+            <span>${esc(n.src)}</span><span class="dot"></span><span>${n.time}</span>
+            ${n.reads ? `<span class="dot"></span><span>${n.reads} reads</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }
+    return `<div class="news-card">
+      <div class="news-body">
+        <div class="news-text">
+          <div class="news-title">${esc(n.title)}</div>
+          <div class="news-meta"><span>${esc(n.src)}</span><span class="dot"></span><span>${n.time}</span></div>
+        </div>
+        <div class="news-thumb">${n.icon}</div>
+      </div>
+      <div class="news-stats"><span>❤️ ${randInt(50,400)}</span><span>💬 ${randInt(5,60)}</span><span>↗️ ${randInt(10,100)}</span></div>
+    </div>`;
+  }
+
+  // ══════════════════════════════════════
+  // Build feeds
+  // ══════════════════════════════════════
+  function buildFeeds() {
+    const localFeed = document.getElementById('feed-local');
+    const fyFeed = document.getElementById('feed-foryou');
+    const total = surveyData.length;
+    const stateCounts = getStateCounts();
+    // Find top states by count
+    const topStates = Object.entries(stateCounts).sort((a,b) => b[1].length - a[1].length);
+
+    // ── LOCAL FEED ──
+    let localHTML = '';
+
+    // CTA
+    localHTML += `
+      <div class="cta-card" onclick="openForm()">
+        <div class="cta-badge">✨ Community Spotlight</div>
+        <h2>Nominate Your Favorite Local Business</h2>
+        <p>Tell us about a business that makes your community special. They could be featured to millions of local readers!</p>
+        <button class="cta-btn" onclick="event.stopPropagation(); openForm()">Nominate Now →</button>
+        <div class="social-proof">🔥 ${total} nominations from the pilot survey</div>
+      </div>`;
+
+    // Stats bar
+    const catCount = new Set(surveyData.map(d => d.category)).size;
+    const cityCount = new Set(surveyData.map(d => d.city + d.state)).size;
+    localHTML += `
+      <div class="stats-bar">
+        <div class="stat-item"><div class="stat-num">${total}</div><div class="stat-label">Nominations</div></div>
+        <div class="stat-item"><div class="stat-num">${cityCount}</div><div class="stat-label">Cities</div></div>
+        <div class="stat-item"><div class="stat-num">${catCount}</div><div class="stat-label">Categories</div></div>
+        <div class="stat-item"><div class="stat-num">20min</div><div class="stat-label">Collected in</div></div>
+      </div>`;
+
+    // Rankings: top state
+    const topState = topStates[0];
+    localHTML += `<div class="rankings-card"><div class="rankings-header">🏆 Top Nominations · ${topState[0]}<span class="see-all">See All →</span></div>`;
+    topState[1].slice(0, 5).forEach((d, i) => {
+      localHTML += `<div class="rank-item">
+        <div class="rank-num">${i + 1}</div>
+        <div class="rank-info"><div class="rank-name">${esc(d.name)}</div><div class="rank-meta">${esc(d.category)} · ${esc(d.city)}</div></div>
+        <div class="rank-votes">${d.rating || '5'}★</div>
+      </div>`;
+    });
+    localHTML += '</div>';
+
+    // All nominations as full cards
+    const timeLabels = ['Just now','2m ago','5m ago','8m ago','12m ago','15m ago','18m ago','20m ago'];
+    surveyData.forEach((d, i) => {
+      if (i === 6) localHTML += '<div class="section-divider">🆕 More Nominations</div>';
+      localHTML += fullCardHTML(d, timeLabels[Math.min(i, timeLabels.length - 1)]);
+    });
+
+    localFeed.innerHTML = localHTML;
+
+    // ── FOR YOU FEED ──
+    let fyHTML = '';
+
+    // News 1
+    fyHTML += newsCardHTML(newsCards[0]);
+
+    // Trending
+    fyHTML += `<div class="trending-bar">
+      <div class="trending-label">🔥 Trending Nationwide</div>
+      <div class="trending-item"><span class="trending-num">1</span><span class="trending-text">${total} local businesses nominated in 20 minutes</span><span class="trending-tag">· Community</span></div>
+      <div class="trending-item"><span class="trending-num">2</span><span class="trending-text">Restaurant nominations lead at 50%</span><span class="trending-tag">· Food</span></div>
+      <div class="trending-item"><span class="trending-num">3</span><span class="trending-text">Small town America loves local spotlight</span><span class="trending-tag">· Culture</span></div>
+    </div>`;
+
+    // Interleave news + compact nomination cards
+    // Pick a subset for For You (spread across states)
+    const fyNoms = [];
+    const usedStates = new Set();
+    surveyData.forEach(d => {
+      if (!usedStates.has(d.state) && d.story.length > 30) {
+        fyNoms.push(d);
+        usedStates.add(d.state);
+      }
+    });
+
+    let newsIdx = 1;
+    const locationLabels = ['Based on your location', 'Popular near you', 'Trending in your area', 'Community pick', 'Recommended for you'];
+
+    fyNoms.forEach((d, i) => {
+      // Insert a news card every 2 nominations
+      if (i % 2 === 0 && newsIdx < newsCards.length) {
+        fyHTML += newsCardHTML(newsCards[newsIdx++]);
+      }
+      // Inline CTA after 3rd nomination
+      if (i === 3) {
+        fyHTML += `<div class="cta-inline" onclick="openForm()">
+          <div class="cta-inline-icon">📝</div>
+          <div class="cta-inline-body">
+            <div class="cta-inline-title">Know a great local business?</div>
+            <div class="cta-inline-sub">Nominate them for the Community Spotlight</div>
+          </div>
+          <div class="cta-inline-arrow">›</div>
+        </div>`;
+      }
+      fyHTML += compactCardHTML(d, locationLabels[i % locationLabels.length]);
+    });
+
+    // Remaining news
+    while (newsIdx < newsCards.length) {
+      fyHTML += newsCardHTML(newsCards[newsIdx++]);
+    }
+
+    fyFeed.innerHTML = fyHTML;
+
+    // Init quote toggles
+    initQuoteToggles();
+  }
+
+  // ══════════════════════════════════════
+  // Core logic
+  // ══════════════════════════════════════
   const modal = document.getElementById('modal');
   const formView = document.getElementById('formView');
   const successView = document.getElementById('successView');
   const feedSlider = document.getElementById('feedSlider');
   let currentTab = 'local';
 
-  // ── Tab switching ──
   function switchTab(tab) {
     if (tab === currentTab) return;
     currentTab = tab;
-
     document.querySelectorAll('.tabs span').forEach(s => s.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
-
-    if (tab === 'local') {
-      feedSlider.classList.add('at-local');
-    } else {
-      feedSlider.classList.remove('at-local');
-    }
-
-    // Scroll to top of the target feed
+    if (tab === 'local') feedSlider.classList.add('at-local');
+    else feedSlider.classList.remove('at-local');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ── Swipe gesture for tabs ──
-  let touchStartX = 0;
-  let touchStartY = 0;
-  document.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', (e) => {
+  // Swipe
+  let touchStartX = 0, touchStartY = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend', e => {
     if (modal.classList.contains('active')) return;
     const dx = e.changedTouches[0].clientX - touchStartX;
     const dy = e.changedTouches[0].clientY - touchStartY;
@@ -924,7 +841,6 @@
     }
   }, { passive: true });
 
-  // ── Form ──
   function openForm() {
     formView.style.display = 'block';
     successView.classList.remove('active');
@@ -941,13 +857,10 @@
     const name = document.getElementById('bizName').value;
     const category = document.getElementById('bizCategory').value;
     const reason = document.getElementById('bizReason').value;
-
     document.getElementById('previewBiz').textContent = name;
     document.getElementById('previewQuote').textContent = `"${reason}"`;
-
     formView.style.display = 'none';
     successView.classList.add('active');
-
     setTimeout(() => {
       addCardToLocalFeed(name, category, reason);
       addCompactToForYouFeed(name, category, reason);
@@ -959,12 +872,8 @@
     card.className = 'favorite-card';
     card.style.animation = 'slideUp 0.3s ease';
     card.innerHTML = `
-      <div class="card-header">
-        <div class="source-icon">⭐</div>
-        <div class="source-info">
-          <div class="source-name">Community Favorite</div>
-          <div class="source-meta">Tucson, AZ · Just now</div>
-        </div>
+      <div class="card-header"><div class="source-icon">⭐</div>
+        <div class="source-info"><div class="source-name">Community Favorite</div><div class="source-meta">Tucson, AZ · Just now</div></div>
       </div>
       <div class="card-body">
         <div class="nominate-count">❤️ 1 person nominated this business</div>
@@ -973,13 +882,7 @@
         <div class="biz-quote">"${esc(reason)}"</div>
         <div class="biz-location">📍 Tucson, Arizona</div>
       </div>
-      <div class="card-stats">
-        <span>❤️ 1</span>
-        <span>💬 0</span>
-        <span>↗️ Share</span>
-        <span style="margin-left:auto" onclick="openForm()">📝 Nominate</span>
-      </div>
-    `;
+      <div class="card-stats"><span>❤️ 1</span><span>💬 0</span><span>↗️ Share</span><span style="margin-left:auto" onclick="openForm()">📝 Nominate</span></div>`;
     const localFeed = document.getElementById('feed-local');
     localFeed.insertBefore(card, localFeed.children[1]);
     initQuoteToggles(card);
@@ -996,23 +899,9 @@
         <div class="compact-sub">${esc(category)} · 1 nomination</div>
         <div class="compact-quote">"${esc(reason)}"</div>
       </div>
-      <div class="compact-footer">
-        <span>❤️ 1</span>
-        <span>💬 0</span>
-        <span>↗️ Share</span>
-        <span class="sponsored-label">Just nominated</span>
-      </div>
-    `;
+      <div class="compact-footer"><span>❤️ 1</span><span>💬 0</span><span>↗️ Share</span><span class="sponsored-label">Just nominated</span></div>`;
     const fyFeed = document.getElementById('feed-foryou');
-    // Insert after 3rd item (between news)
-    const insertAt = Math.min(3, fyFeed.children.length);
-    fyFeed.insertBefore(card, fyFeed.children[insertAt]);
-  }
-
-  function esc(text) {
-    const d = document.createElement('div');
-    d.textContent = text;
-    return d.innerHTML;
+    fyFeed.insertBefore(card, fyFeed.children[Math.min(3, fyFeed.children.length)]);
   }
 
   function showToast(msg) {
@@ -1022,15 +911,12 @@
     setTimeout(() => t.classList.remove('show'), 2000);
   }
 
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeForm();
-  });
+  modal.addEventListener('click', e => { if (e.target === modal) closeForm(); });
 
-  // ── Quote expand/collapse ──
+  // Quote expand/collapse
   function initQuoteToggles(root) {
     (root || document).querySelectorAll('.biz-quote:not([data-toggle-init])').forEach(q => {
       q.setAttribute('data-toggle-init', '1');
-      // Wait for layout to check if text is actually clamped
       requestAnimationFrame(() => {
         if (q.scrollHeight > q.clientHeight + 2) {
           const toggle = document.createElement('div');
@@ -1047,7 +933,9 @@
       });
     });
   }
-  initQuoteToggles();
+
+  // Init
+  buildFeeds();
 </script>
 
 </body>
